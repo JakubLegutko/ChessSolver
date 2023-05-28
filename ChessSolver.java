@@ -7,6 +7,7 @@ import java.util.Optional;
 public class ChessSolver implements Solver, Setup {
     Board board;
     public ChessSolver() {
+        board = new Board();
     }
 
     @Override

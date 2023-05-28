@@ -15,7 +15,7 @@ public class Board implements ResultCheckerCommand, PieceIterator {
     }
 
     public Board() {
-        this.pieces = null;
+        this.pieces = new ArrayList<>();
         for (int i = 0; i < 8; i++)
             for (int j = 0; j < 8; j++)
                 fields.add(new Position(File.values()[i], Rank.values()[j]));
@@ -28,11 +28,7 @@ public class Board implements ResultCheckerCommand, PieceIterator {
 
 
     public void addChessPiece(Position position, Color color, ChessPiece chessPiece) {
-        PieceBuilder pieceBuilder = new PieceBuilderImpl();
-        pieceBuilder.setPieceType(chessPiece);
-        pieceBuilder.setColor(color);
-        pieceBuilder.setPosition(position);
-        Piece piece = new Piece(pieceBuilder);
+        Piece piece = new Piece(chessPiece, color, position);
         pieces.add(piece);
     }
 }

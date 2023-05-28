@@ -1,5 +1,15 @@
 package created.moves;
 
-public class KingMoveRestrictionDecorator {
-    //Decorates Queen to restrict moves to one square
+import created.Move;
+import created.MoveTemplate;
+import edu.uj.po.interfaces.Color;
+import edu.uj.po.interfaces.Position;
+
+import java.util.List;
+
+public class KingMoveRestrictionDecorator extends MoveTemplate {
+    @Override
+    public List<Move> generateMovesImpl(Position position, Color color) {
+        return null;
+    }
 }

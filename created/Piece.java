@@ -8,13 +8,54 @@ import edu.uj.po.interfaces.Position;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Piece {
+public class Piece { // Needs logic for piece promotion
     ChessPiece pieceType;
     Color pieceColor;
     Position piecePosition;
+
+    public ChessPiece getPieceType() {
+        return pieceType;
+    }
+
+    public void setPieceType(ChessPiece pieceType) {
+        this.pieceType = pieceType;
+    }
+
+    public Color getPieceColor() {
+        return pieceColor;
+    }
+
+    public void setPieceColor(Color pieceColor) {
+        this.pieceColor = pieceColor;
+    }
+
+    public Position getPiecePosition() {
+        return piecePosition;
+    }
+
+    public void setPiecePosition(Position piecePosition) {
+        this.piecePosition = piecePosition;
+    }
+
+    public MoveTemplate getMoveTemplate() {
+        return moveTemplate;
+    }
+
+    public void setMoveTemplate(MoveTemplate moveTemplate) {
+        this.moveTemplate = moveTemplate;
+    }
+
+    public List<MoveMore> getListOfMoveMores() {
+        return listOfMoveMores;
+    }
+
+    public void setListOfMoveMores(List<MoveMore> listOfMoveMores) {
+        this.listOfMoveMores = listOfMoveMores;
+    }
+
     MoveTemplate moveTemplate;
 
-    List<Move> listOfMoves = new ArrayList<>();
+    List<MoveMore> listOfMoveMores = new ArrayList<>();
 
     public MoveTemplate setMove(ChessPiece pieceType) {
         switch (pieceType) {
@@ -34,11 +75,15 @@ public class Piece {
                 return null;
         }
     }
+    public void executeMove(MoveMore moveMore) {
+        this.piecePosition = moveMore.getTo();
+        this.listOfMoveMores = moveTemplate.generateMoves(piecePosition, pieceColor);
+    }
     public Piece(ChessPiece pieceType, Color pieceColor, Position piecePosition) {
         this.pieceType = pieceType;
         this.pieceColor = pieceColor;
         this.piecePosition = piecePosition;
         this.moveTemplate = setMove(pieceType);
-        listOfMoves = moveTemplate.generateMovesImpl(piecePosition, pieceColor);
+        listOfMoveMores = moveTemplate.generateMoves(piecePosition, pieceColor);
     }
 }

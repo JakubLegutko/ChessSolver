@@ -6,9 +6,9 @@ import edu.uj.po.interfaces.Position;
 import java.util.List;
 
 public abstract class MoveTemplate {
-    public final List<Move> generateMoves(Position position, Color color) {
-        List<Move> listOfMoves = generateMovesImpl(position, color);
-        return listOfMoves;
+    public final List<MoveMore> generateMoves(Position position, Color color) {
+        List<MoveMore> listOfMoveMores = generateMovesImpl(position, color);
+        return listOfMoveMores;
     }
-    public abstract List<Move> generateMovesImpl(Position position, Color color);
+    public abstract List<MoveMore> generateMovesImpl(Position position, Color color);
 }

@@ -1,6 +1,6 @@
 import created.Board;
 import edu.uj.po.interfaces.*;
-
+import util.result;
 import java.util.Optional;
 
 
@@ -12,12 +12,12 @@ public class ChessSolver implements Solver, Setup {
 
     @Override
     public Optional<Move> findMateInOneMove(Color color) {
-        return Optional.empty();
+        return board.checkResult(color, result.CHECKMATE);
     }
 
     @Override
     public Optional<Move> findStalemateInOneMove(Color color) {
-        return Optional.empty();
+        return board.checkResult(color, result.STALEMATE);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package created.moves;
 
-import created.Move;
+import created.MoveMore;
 import created.MoveTemplate;
 import edu.uj.po.interfaces.Color;
 import edu.uj.po.interfaces.Position;
@@ -11,9 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PawnMove extends MoveTemplate {
-    List <Position> startingPositionsWhite = new ArrayList<>();
-    List <Position> startingPositionsBlack = new ArrayList<>();
+    List <Position> startingPositionsWhite;
+    List <Position> startingPositionsBlack;
     public PawnMove() {
+        startingPositionsBlack = new ArrayList<>();
+        startingPositionsWhite = new ArrayList<>();
         startingPositionsWhite.add(new Position(File.a,Rank.SECOND));
         startingPositionsWhite.add(new Position(File.b,Rank.SECOND));
         startingPositionsWhite.add(new Position(File.c,Rank.SECOND));
@@ -33,34 +35,34 @@ public class PawnMove extends MoveTemplate {
     }
 
     @Override
-    public List<Move> generateMovesImpl(Position position, Color color) {
-        List <Move> listOfMoves = new ArrayList<>();
+    public List<MoveMore> generateMovesImpl(Position position, Color color) {
+        List <MoveMore> listOfMoveMores = new ArrayList<>();
         Rank rank [] = Rank.values();
         File file [] = File.values();
 
         if (startingPositionsBlack.contains(position) && color == Color.BLACK) {
-            listOfMoves.add(new Move(position, new Position(position.file(), Rank.FIFTH),false));
+            listOfMoveMores.add(new MoveMore(position, new Position(position.file(), Rank.FIFTH),false));
         }
         else if (startingPositionsWhite.contains(position) && color == Color.WHITE) {
-            listOfMoves.add(new Move(position, new Position(position.file(), Rank.FOURTH),false));
+            listOfMoveMores.add(new MoveMore(position, new Position(position.file(), Rank.FOURTH),false));
         }
 
             if (color == Color.BLACK) {
-                listOfMoves.add(new Move(position, new Position(position.file(), rank[position.rank().ordinal() - 1]),false));
+                listOfMoveMores.add(new MoveMore(position, new Position(position.file(), rank[position.rank().ordinal() - 1]),false));
                 if (position.file().ordinal() < 7) // add hits if possible
-                    listOfMoves.add(new Move(position, new Position(file[position.file().ordinal() + 1], rank[position.rank().ordinal() - 1]),true));
+                    listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() + 1], rank[position.rank().ordinal() - 1]),true));
                 if (position.file().ordinal() > 0)
-                    listOfMoves.add(new Move(position, new Position(file[position.file().ordinal() - 1], rank[position.rank().ordinal() - 1]),true));
+                    listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() - 1], rank[position.rank().ordinal() - 1]),true));
             }
             else {
-                listOfMoves.add(new Move(position, new Position(position.file(), rank[position.rank().ordinal() + 1]),false));
+                listOfMoveMores.add(new MoveMore(position, new Position(position.file(), rank[position.rank().ordinal() + 1]),false));
                 if (position.file().ordinal() < 7) // add hits if possible
-                    listOfMoves.add(new Move(position, new Position(file[position.file().ordinal() + 1], rank[position.rank().ordinal() + 1]),true));
+                    listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() + 1], rank[position.rank().ordinal() + 1]),true));
                 if (position.file().ordinal() > 0)
-                    listOfMoves.add(new Move(position, new Position(file[position.file().ordinal() - 1], rank[position.rank().ordinal() + 1]),true));
+                    listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() - 1], rank[position.rank().ordinal() + 1]),true));
         }
+    // Needs logic for En Passant
 
-
-        return listOfMoves;
+        return listOfMoveMores;
     }
 }

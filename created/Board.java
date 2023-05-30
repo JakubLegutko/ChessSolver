@@ -46,6 +46,32 @@ public class Board  {
         return resultCheckerCommand.checkResult(color, this);
     }
 
+    public void printBoard() {
+        for (int rank = 7; rank >= 0; rank--) {
+            for (int file = 0; file < 8; file++) {
+                Position position = new Position(File.values()[file], Rank.values()[rank]);
+                Piece piece = getPieceAtPosition(position);
+                if (piece == null) {
+                    System.out.print("[ ]");
+                    continue;
+                }
+                String symbol = String.valueOf(ChessPieceAsUnicode.getSymbol(piece.pieceType, piece.pieceColor));
+                System.out.print(symbol);
+            }
+            System.out.println();
+        }
+    }
+
+    private Piece getPieceAtPosition(Position position) {
+        for (Piece piece : pieces) {
+            if (piece.getPiecePosition().equals(position)) {
+                return piece;
+            }
+        }
+
+        return null;
+    }
+
 
 
     public void addChessPiece(Position position, Color color, ChessPiece chessPiece) {

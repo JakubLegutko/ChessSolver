@@ -28,5 +28,6 @@ public class ChessSolver implements Solver, Setup {
     @Override
     public void addChessPiece(Position position, Color color, ChessPiece piece) {
         board.addChessPiece(position, color, piece);
+        board.printBoard(); // DEBUG
     }
 }

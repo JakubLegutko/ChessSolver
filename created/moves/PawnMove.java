@@ -48,17 +48,25 @@ public class PawnMove extends MoveTemplate {
         }
 
             if (color == Color.BLACK) {
-                listOfMoveMores.add(new MoveMore(position, new Position(position.file(), rank[position.rank().ordinal() - 1]),false));
-                if (position.file().ordinal() < 7) // add hits if possible
+                if (position.rank().ordinal() == 0) // add promotion if possible
+                    // Promotion to Queen
+                    System.out.println("Promotion to Queen");
+                else
+                    listOfMoveMores.add(new MoveMore(position, new Position(position.file(), rank[position.rank().ordinal() - 1]),false));
+                if (position.file().ordinal() < 7 && position.rank().ordinal() != 0 && position.rank().ordinal() != 7) // add hits if possible
                     listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() + 1], rank[position.rank().ordinal() - 1]),true));
-                if (position.file().ordinal() > 0)
+                if (position.file().ordinal() > 0 && position.rank().ordinal() != 0 && position.rank().ordinal() != 7)
                     listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() - 1], rank[position.rank().ordinal() - 1]),true));
             }
             else {
-                listOfMoveMores.add(new MoveMore(position, new Position(position.file(), rank[position.rank().ordinal() + 1]),false));
-                if (position.file().ordinal() < 7) // add hits if possible
+                if (position.rank().ordinal() == 7) // add promotion if possible
+                    // Promotion to Queen
+                    System.out.println("Promotion to Queen");
+                else
+                    listOfMoveMores.add(new MoveMore(position, new Position(position.file(), rank[position.rank().ordinal() + 1]),false));
+                if (position.file().ordinal() < 7 && position.rank().ordinal() != 0 && position.rank().ordinal() != 7) // add hits if possible
                     listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() + 1], rank[position.rank().ordinal() + 1]),true));
-                if (position.file().ordinal() > 0)
+                if (position.file().ordinal() > 0 && position.rank().ordinal() != 0 && position.rank().ordinal() != 7)
                     listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() - 1], rank[position.rank().ordinal() + 1]),true));
         }
     // Needs logic for En Passant

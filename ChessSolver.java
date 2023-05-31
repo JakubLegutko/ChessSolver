@@ -24,10 +24,13 @@ public class ChessSolver implements Solver, Setup {
     public void reset() {
         Board board = new Board();
     }
+    public void printBoard() {
+        board.printBoard();
+    }
 
     @Override
     public void addChessPiece(Position position, Color color, ChessPiece piece) {
         board.addChessPiece(position, color, piece);
-        board.printBoard(); // DEBUG
+
     }
 }

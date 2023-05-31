@@ -3,6 +3,7 @@ package created;
 import created.moves.*;
 import edu.uj.po.interfaces.ChessPiece;
 import edu.uj.po.interfaces.Color;
+import edu.uj.po.interfaces.Move;
 import edu.uj.po.interfaces.Position;
 
 import java.util.ArrayList;
@@ -78,6 +79,16 @@ public class Piece { // Needs logic for piece promotion
     public void executeMove(MoveMore moveMore) {
         this.piecePosition = moveMore.getTo();
         this.listOfMoveMores = moveTemplate.generateMoves(piecePosition, pieceColor);
+
+    }
+    public void eliminateImpossibleMoves(Board board) {
+        List <MoveMore> listOfMovesToRemove = new ArrayList<>();
+        for (MoveMore move : this.listOfMoveMores) {
+            if (!board.isMovePossible(move)) {
+                listOfMovesToRemove.add(move);
+            }
+        }
+        this.listOfMoveMores.removeAll(listOfMovesToRemove);
     }
     public Piece(ChessPiece pieceType, Color pieceColor, Position piecePosition) {
         this.pieceType = pieceType;

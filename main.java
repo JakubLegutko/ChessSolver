@@ -5,7 +5,7 @@ public class main {
 
         public static void main(String[] args) {
             ChessSolver chessSolver = new ChessSolver();
-            var color = Setup_promotion(chessSolver);
+            var color = Setup_2(chessSolver);
             chessSolver.printBoard();
             chessSolver.findMateInOneMove(color)
                     .ifPresent(System.out::println);

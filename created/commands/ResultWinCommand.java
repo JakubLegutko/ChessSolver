@@ -26,11 +26,12 @@ public class ResultWinCommand extends ResultCheckerCommand {
                         piece.eliminateImpossibleMoves(board);
                         boolean isCheckmate = isCheckmateOpposite(color, piece, move);
                         //undoMove();
-                        board.restoreFromMemento(memento);
+
                         //piece.eliminateImpossibleMoves(board);
                         if (isCheckmate) {
                             return Optional.of(MoveAdapter.convertMoveMoreToMove(move));
                         }
+                        board.restoreFromMemento(memento);
                     }
                 }
             }

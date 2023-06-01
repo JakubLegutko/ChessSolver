@@ -5,7 +5,7 @@ public class main {
 
         public static void main(String[] args) {
             ChessSolver chessSolver = new ChessSolver();
-            var color = Setup_2(chessSolver);
+            var color = Setup_4(chessSolver);
             chessSolver.printBoard();
             chessSolver.findMateInOneMove(color)
                     .ifPresent(System.out::println);
@@ -380,7 +380,17 @@ public class main {
             chessSolver.addChessPiece(new Position(File.g, Rank.SECOND), Color.WHITE, ChessPiece.PAWN);
             return Color.BLACK;
         }
+        // Mate A7-A8
+    private static Color Setup_promotion(ChessSolver chessSolver){
 
+        chessSolver.addChessPiece(new Position(File.a, Rank.SEVENTH), Color.BLACK, ChessPiece.PAWN);
+
+        chessSolver.addChessPiece(new Position(File.e, Rank.EIGHTH), Color.WHITE, ChessPiece.KING);
+        chessSolver.addChessPiece(new Position(File.a, Rank.FIRST), Color.BLACK, ChessPiece.KING);
+        chessSolver.addChessPiece(new Position(File.b, Rank.SEVENTH), Color.BLACK, ChessPiece.ROOK);
+
+        return Color.BLACK;
+    }
         //Mate: D5-E6
         private static Color Setup_EnPassantHard(ChessSolver chessSolver){
             chessSolver.addChessPiece(new Position(File.c, Rank.EIGHTH), Color.BLACK, ChessPiece.QUEEN);

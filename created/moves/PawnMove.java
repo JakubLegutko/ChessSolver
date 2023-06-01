@@ -13,6 +13,7 @@ import java.util.List;
 public class PawnMove extends MoveTemplate {
     List <Position> startingPositionsWhite;
     List <Position> startingPositionsBlack;
+    QueenMove queenMove = new QueenMove();
     public PawnMove() {
         startingPositionsBlack = new ArrayList<>();
         startingPositionsWhite = new ArrayList<>();
@@ -49,8 +50,7 @@ public class PawnMove extends MoveTemplate {
 
             if (color == Color.BLACK) {
                 if (position.rank().ordinal() == 0) // add promotion if possible
-                    // Promotion to Queen
-                    System.out.println("Promotion to Queen");
+                    queenMove.generateMovesImpl(position, color);
                 else
                     listOfMoveMores.add(new MoveMore(position, new Position(position.file(), rank[position.rank().ordinal() - 1]),false));
                 if (position.file().ordinal() < 7 && position.rank().ordinal() != 0 && position.rank().ordinal() != 7) // add hits if possible
@@ -60,8 +60,7 @@ public class PawnMove extends MoveTemplate {
             }
             else {
                 if (position.rank().ordinal() == 7) // add promotion if possible
-                    // Promotion to Queen
-                    System.out.println("Promotion to Queen");
+                    queenMove.generateMovesImpl(position, color);
                 else
                     listOfMoveMores.add(new MoveMore(position, new Position(position.file(), rank[position.rank().ordinal() + 1]),false));
                 if (position.file().ordinal() < 7 && position.rank().ordinal() != 0 && position.rank().ordinal() != 7) // add hits if possible

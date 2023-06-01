@@ -13,6 +13,15 @@ public class Piece { // Needs logic for piece promotion
     ChessPiece pieceType;
     Color pieceColor;
     Position piecePosition;
+    boolean isActive = true;
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 
     public ChessPiece getPieceType() {
         return pieceType;

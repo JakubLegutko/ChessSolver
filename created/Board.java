@@ -71,9 +71,9 @@ public class Board {
         }
     }
 
-    private Piece getPieceAtPosition(Position position) {
+    public Piece getPieceAtPosition(Position position) {
         for (Piece piece : pieces) {
-            if (piece.getPiecePosition().equals(position)) {
+            if (piece.getPiecePosition().equals(position) && piece.isActive()) {
                 return piece;
             }
         }
@@ -98,6 +98,16 @@ public class Board {
         return pieces;
 
     }
+    public List<MoveMore> getTeamMoves(Color color) {
+        List<MoveMore> moves = new ArrayList<>();
+        for (Piece piece : this.pieces) {
+            if (piece.getPieceColor() == color) {
+                moves.addAll(piece.listOfMoveMores);
+            }
+        }
+        return moves;
+
+    }
 
     public boolean isMovePossibleNoSelfCheck(MoveMore move) {
         Piece piece = getPieceAtPosition(move.getFrom());
@@ -112,7 +122,7 @@ public class Board {
 
         return isMovePossible;
     }
-
+// Not sure if code below accounts for hits, added isActive to piece class
     public boolean isMovePossible(MoveMore move) {
         Piece piece = getPieceAtPosition(move.getFrom());
         Piece king = getTeam(piece.getPieceColor()).stream().filter(p -> p.pieceType == ChessPiece.KING).findFirst().get();
@@ -172,6 +182,10 @@ public class Board {
             }
         }
         return isMovePossible;
+    }
+
+    public void deactivatePieceAtPosition(Position to) {
+        getPieceAtPosition(to).setActive(false);
     }
 }
 

@@ -32,5 +32,6 @@ public class ChessSolver implements Solver, Setup {
     public void addChessPiece(Position position, Color color, ChessPiece piece) {
         board.addChessPiece(position, color, piece);
 
+
     }
 }

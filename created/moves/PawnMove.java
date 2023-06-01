@@ -49,19 +49,21 @@ public class PawnMove extends MoveTemplate {
         }
 
             if (color == Color.BLACK) {
-                if (position.rank().ordinal() == 0) // add promotion if possible
+                if (position.rank() == Rank.FIRST) { // add promotion if possible
                     queenMove.generateMovesImpl(position, color);
-                else
+                    System.out.println("black promotion");
+                }else
                     listOfMoveMores.add(new MoveMore(position, new Position(position.file(), rank[position.rank().ordinal() - 1]),false));
                 if (position.file().ordinal() < 7 && position.rank().ordinal() != 0 && position.rank().ordinal() != 7) // add hits if possible
                     listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() + 1], rank[position.rank().ordinal() - 1]),true));
-                if (position.file().ordinal() > 0 && position.rank().ordinal() != 0 && position.rank().ordinal() != 7)
+                if (position.file().ordinal() >= 0 && position.rank().ordinal() != 0 && position.rank().ordinal() != 7)
                     listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() - 1], rank[position.rank().ordinal() - 1]),true));
             }
             else {
-                if (position.rank().ordinal() == 7) // add promotion if possible
+                if (position.rank() == Rank.EIGHTH) { // add promotion if possible
                     queenMove.generateMovesImpl(position, color);
-                else
+                    System.out.println("white promotion");
+                }else
                     listOfMoveMores.add(new MoveMore(position, new Position(position.file(), rank[position.rank().ordinal() + 1]),false));
                 if (position.file().ordinal() < 7 && position.rank().ordinal() != 0 && position.rank().ordinal() != 7) // add hits if possible
                     listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() + 1], rank[position.rank().ordinal() + 1]),true));

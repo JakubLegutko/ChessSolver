@@ -90,6 +90,9 @@ public class Piece { // Needs logic for piece promotion
         this.listOfMoveMores = moveTemplate.generateMoves(piecePosition, pieceColor);
 
     }
+    public void recalculateOwnMoves() {
+        this.listOfMoveMores = moveTemplate.generateMoves(piecePosition, pieceColor);
+    }
     public void eliminateImpossibleMoves(Board board) {
         List <MoveMore> listOfMovesToRemove = new ArrayList<>();
         for (MoveMore move : this.listOfMoveMores) {

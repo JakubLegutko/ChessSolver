@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class Board {
-    List<Piece> pieces;
-    List<Position> fields = new ArrayList<>();
+    private List<Piece> pieces;
+    private List<Position> fields = new ArrayList<>();
     ResultCheckerCommand resultCheckerCommand;
 
     public void setFields(List<Position> fields) {
@@ -40,14 +40,9 @@ public class Board {
 
     }
 
-    public BoardSaveState createSaveState() {
-        return new BoardSaveState(this, pieces, fields);
-    }
 
     public Optional<Move> checkResult(Color color, result result) {
-        for (Piece existingPiece : pieces) {
-            existingPiece.eliminateImpossibleMoves(this);
-        }
+        recalculateMoves();
         if (result == result.CHECKMATE)
             resultCheckerCommand = new ResultWinCommand();
         else //(result == result.STALEMATE)
@@ -55,8 +50,20 @@ public class Board {
         return resultCheckerCommand.checkResult(color, this);
     }
 
+    public void recalculateMoves() {
+        for (Piece existingPiece : pieces) {
+            existingPiece.recalculateOwnMoves();
+
+        }
+        for (Piece existingPiece : pieces) {
+            existingPiece.eliminateImpossibleMoves(this);
+        }
+    }
     public void printBoard() {
+        System.out.println("New board:");
+        System.out.println("   A   B   C   D   E   F   G   H");
         for (int rank = 7; rank >= 0; rank--) {
+            System.out.print(rank + 1 + " ");
             for (int file = 0; file < 8; file++) {
                 Position position = new Position(File.values()[file], Rank.values()[rank]);
                 Piece piece = getPieceAtPosition(position);
@@ -80,11 +87,37 @@ public class Board {
 
         return null;
     }
+    public BoardMemento createMemento() {
+        return new BoardMemento(new ArrayList<>(pieces), new ArrayList<>(fields));
+    }
 
+    public void restoreFromMemento(BoardMemento memento) {
+        this.pieces = memento.getPieces();
+        this.fields = memento.getFields();
+    }
+
+    public class BoardMemento {
+        private final List<Piece> pieces;
+        private final List<Position> fields;
+
+        private BoardMemento(List<Piece> pieces, List<Position> fields) {
+            this.pieces = pieces;
+            this.fields = fields;
+        }
+
+        private List<Piece> getPieces() {
+            return pieces;
+        }
+
+        private List<Position> getFields() {
+            return fields;
+        }
+    }
 
     public void addChessPiece(Position position, Color color, ChessPiece chessPiece) {
         Piece piece = new Piece(chessPiece, color, position);
         pieces.add(piece);
+
 
     }
 
@@ -98,6 +131,16 @@ public class Board {
         return pieces;
 
     }
+    public List<MoveMore> getTeamMovesNoKing(Color color) {
+        List<MoveMore> moves = new ArrayList<>();
+        for (Piece piece : this.pieces) {
+            if (piece.getPieceColor() == color && piece.pieceType != ChessPiece.KING) {
+                moves.addAll(piece.listOfMoveMores);
+            }
+        }
+        return moves;
+
+    }
     public List<MoveMore> getTeamMoves(Color color) {
         List<MoveMore> moves = new ArrayList<>();
         for (Piece piece : this.pieces) {
@@ -108,18 +151,61 @@ public class Board {
         return moves;
 
     }
-
     public boolean isMovePossibleNoSelfCheck(MoveMore move) {
         Piece piece = getPieceAtPosition(move.getFrom());
         Piece king = getTeam(piece.getPieceColor()).stream().filter(p -> p.pieceType == ChessPiece.KING).findFirst().get();
         boolean isMovePossible = true;
         // is destination field occupied by enemy piece and move is not pawn move only?
-        if (getPieceAtPosition(move.getTo()) != null && getPieceAtPosition(move.getTo()).pieceColor != piece.getPieceColor() && piece.pieceType != ChessPiece.PAWN && move.isHit() != true)
+        if (getPieceAtPosition(move.getTo()) != null && getPieceAtPosition(move.getTo()).pieceColor != piece.getPieceColor() && piece.pieceType == ChessPiece.PAWN && move.isHit() != true)
+            isMovePossible = false;
+        // is destination empty and move is pawn attack?
+        if (getPieceAtPosition(move.getTo()) == null  && piece.pieceType == ChessPiece.PAWN && move.isHit() == true)
             isMovePossible = false;
         // is field occupied by friendly piece?
         if (getPieceAtPosition(move.getTo()) != null && getPieceAtPosition(move.getTo()).pieceColor == piece.getPieceColor())
             isMovePossible = false;
+        // is there anything between the start and end position and piece is not knight?
+        if (piece.pieceType != ChessPiece.KNIGHT) {
+            if (move.getFrom().file() == move.getTo().file()) {
+                int rankFrom = move.getFrom().rank().ordinal();
+                int rankTo = move.getTo().rank().ordinal();
+                int rankDifference = rankTo - rankFrom;
+                int rankDirection = rankDifference / Math.abs(rankDifference);
+                for (int i = 1; i < Math.abs(rankDifference); i++) {
+                    Position position = new Position(move.getFrom().file(), Rank.values()[rankFrom + i * rankDirection]);
+                    if (getPieceAtPosition(position) != null) {
+                        isMovePossible = false;
+                    }
+                }
+            } else if (move.getFrom().rank() == move.getTo().rank()) {
+                int fileFrom = move.getFrom().file().ordinal();
+                int fileTo = move.getTo().file().ordinal();
+                int fileDifference = fileTo - fileFrom;
+                int fileDirection = fileDifference / Math.abs(fileDifference);
+                for (int i = 1; i < Math.abs(fileDifference); i++) {
+                    Position position = new Position(File.values()[fileFrom + i * fileDirection], move.getFrom().rank());
+                    if (getPieceAtPosition(position) != null) {
+                        isMovePossible = false;
+                    }
+                }
+            } else if (Math.abs(move.getFrom().file().ordinal() - move.getTo().file().ordinal()) == Math.abs(move.getFrom().rank().ordinal() - move.getTo().rank().ordinal())) {
+                int fileFrom = move.getFrom().file().ordinal();
+                int fileTo = move.getTo().file().ordinal();
+                int fileDifference = fileTo - fileFrom;
+                int fileDirection = fileDifference / Math.abs(fileDifference);
+                int rankFrom = move.getFrom().rank().ordinal();
+                int rankTo = move.getTo().rank().ordinal();
+                int rankDifference = rankTo - rankFrom;
+                int rankDirection = rankDifference / Math.abs(rankDifference);
+                for (int i = 1; i < Math.abs(fileDifference); i++) {
+                    Position position = new Position(File.values()[fileFrom + i * fileDirection], Rank.values()[rankFrom + i * rankDirection]);
+                    if (getPieceAtPosition(position) != null) {
+                        isMovePossible = false;
+                    }
 
+                }
+            }
+        }
         return isMovePossible;
     }
 // Not sure if code below accounts for hits, added isActive to piece class
@@ -128,16 +214,19 @@ public class Board {
         Piece king = getTeam(piece.getPieceColor()).stream().filter(p -> p.pieceType == ChessPiece.KING).findFirst().get();
         boolean isMovePossible = true;
         // is destination field occupied by enemy piece and move is not pawn move only?
-        if (getPieceAtPosition(move.getTo()) != null && getPieceAtPosition(move.getTo()).pieceColor != piece.getPieceColor() && piece.pieceType != ChessPiece.PAWN && move.isHit() != true)
+        if (getPieceAtPosition(move.getTo()) != null && getPieceAtPosition(move.getTo()).pieceColor != piece.getPieceColor() && piece.pieceType == ChessPiece.PAWN && move.isHit() != true)
             isMovePossible = false;
         // is field occupied by friendly piece?
         if (getPieceAtPosition(move.getTo()) != null && getPieceAtPosition(move.getTo()).pieceColor == piece.getPieceColor())
             isMovePossible = false;
-
+        // is destination empty and move is pawn attack?
+        if (getPieceAtPosition(move.getTo()) == null  && piece.pieceType == ChessPiece.PAWN && move.isHit() == true)
+            isMovePossible = false;
         // will the move result in check of self?
         if (getTeam(piece.getPieceColor()).stream().noneMatch(p -> p.listOfMoveMores.stream().filter(m -> m.getTo().equals(king.getPiecePosition())).noneMatch(m -> isMovePossibleNoSelfCheck(m)))) {
             isMovePossible = false;
         }
+
 
         // is there anything between the start and end position and piece is not knight?
         if (piece.pieceType != ChessPiece.KNIGHT) {

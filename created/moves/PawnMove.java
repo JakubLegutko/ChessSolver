@@ -50,8 +50,8 @@ public class PawnMove extends MoveTemplate {
 
             if (color == Color.BLACK) {
                 if (position.rank() == Rank.FIRST) { // add promotion if possible
-                    queenMove.generateMovesImpl(position, color);
-                    System.out.println("black promotion");
+                    listOfMoveMores = queenMove.generateMovesImpl(position, color);
+                    //System.out.println("black promotion");
                 }else
                     listOfMoveMores.add(new MoveMore(position, new Position(position.file(), rank[position.rank().ordinal() - 1]),false));
                 if (position.file().ordinal() < 7 && position.rank().ordinal() != 0 && position.rank().ordinal() != 7) // add hits if possible
@@ -61,8 +61,8 @@ public class PawnMove extends MoveTemplate {
             }
             else {
                 if (position.rank() == Rank.EIGHTH) { // add promotion if possible
-                    queenMove.generateMovesImpl(position, color);
-                    System.out.println("white promotion");
+                    listOfMoveMores = queenMove.generateMovesImpl(position, color);
+                    //System.out.println("white promotion");
                 }else
                     listOfMoveMores.add(new MoveMore(position, new Position(position.file(), rank[position.rank().ordinal() + 1]),false));
                 if (position.file().ordinal() < 7 && position.rank().ordinal() != 0 && position.rank().ordinal() != 7) // add hits if possible
@@ -73,5 +73,20 @@ public class PawnMove extends MoveTemplate {
     // Needs logic for En Passant
 
         return listOfMoveMores;
+    }
+
+    //Test promotion
+    public static void main(String[] args){
+        PawnMove pawnMove = new PawnMove();
+        List<MoveMore> moves = pawnMove.generateMovesImpl(new Position(File.a, Rank.EIGHTH), Color.WHITE);
+        for (MoveMore move : moves) {
+            System.out.println(move.getFrom()+" "+move.getTo());
+        }
+        List<MoveMore> moves2 = pawnMove.generateMovesImpl(new Position(File.a, Rank.FIRST), Color.BLACK);
+        for (MoveMore move : moves2) {
+            System.out.println(move.getFrom()+" "+move.getTo());
+        }
+
+
     }
 }

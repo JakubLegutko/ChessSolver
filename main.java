@@ -5,7 +5,7 @@ public class main {
 
         public static void main(String[] args) {
             ChessSolver chessSolver = new ChessSolver();
-            var color = Setup_2(chessSolver);
+            var color = Setup_promotion(chessSolver);
             chessSolver.printBoard();
             chessSolver.findMateInOneMove(color)
                     .ifPresent(System.out::println);
@@ -14,6 +14,7 @@ public class main {
 //        chessSolver.findStalemateInOneMove(color)
 //                .ifPresent(System.out::println);
         }
+
 
         //Mate: H4-F3
         private static Color Setup_1(ChessSolver chessSolver){
@@ -28,6 +29,7 @@ public class main {
         private static Color Setup_2(ChessSolver chessSolver){
             chessSolver.addChessPiece(new Position(File.a, Rank.EIGHTH), Color.BLACK, ChessPiece.ROOK);
             chessSolver.addChessPiece(new Position(File.f, Rank.EIGHTH), Color.BLACK, ChessPiece.ROOK);
+            chessSolver.reset();
             chessSolver.addChessPiece(new Position(File.h, Rank.EIGHTH), Color.BLACK, ChessPiece.KING);
             chessSolver.addChessPiece(new Position(File.a, Rank.SEVENTH), Color.BLACK, ChessPiece.PAWN);
             chessSolver.addChessPiece(new Position(File.b, Rank.SEVENTH), Color.BLACK, ChessPiece.PAWN);
@@ -385,12 +387,10 @@ public class main {
     private static Color Setup_promotion(ChessSolver chessSolver){
 
         chessSolver.addChessPiece(new Position(File.a, Rank.SEVENTH), Color.WHITE, ChessPiece.PAWN);
-
         chessSolver.addChessPiece(new Position(File.e, Rank.EIGHTH), Color.BLACK, ChessPiece.KING);
         chessSolver.addChessPiece(new Position(File.a, Rank.FIRST), Color.WHITE, ChessPiece.KING);
         chessSolver.addChessPiece(new Position(File.b, Rank.SEVENTH), Color.WHITE, ChessPiece.ROOK);
-
-        return Color.BLACK;
+        return Color.WHITE;
     }
         //Mate: D5-E6
         private static Color Setup_EnPassantHard(ChessSolver chessSolver){

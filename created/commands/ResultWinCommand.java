@@ -63,13 +63,13 @@ public class ResultWinCommand extends ResultCheckerCommand {
             }
             boolean isCheck = true;
                     // Try each move and see if it eliminates the check this is fishy, but should work
-                    if(canPieceBeCaptured(attackingpiece))
+                    if(canPieceBeCaptured(attackingpiece)) //UNRELIABLE!!!
                         isCheck = false;
 //                    if(canBlockCheck(color))
 //                        isCheck = false;
 //
-                    if(canKingMove(oppositeColor))
-                        isCheck = false;
+//                    if(canKingMove(oppositeColor)) //UNRELIABLE!!!
+//                        isCheck = false;
 
             return isCheck; // If no moves can eliminate the check, it's a checkmate
         }

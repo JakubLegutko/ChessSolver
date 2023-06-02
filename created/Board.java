@@ -153,6 +153,7 @@ public class Board {
     }
     public boolean isMovePossibleNoSelfCheck(MoveMore move) {
         Piece piece = getPieceAtPosition(move.getFrom());
+        Color oppositeColor = getPieceAtPosition(move.getFrom()).getPieceColor() == Color.WHITE ? Color.BLACK : Color.WHITE;
         Piece king = getTeam(piece.getPieceColor()).stream().filter(p -> p.pieceType == ChessPiece.KING).findFirst().get();
         boolean isMovePossible = true;
         // is destination field occupied by enemy piece and move is not pawn move only?
@@ -160,6 +161,12 @@ public class Board {
             isMovePossible = false;
         // is destination empty and move is pawn attack?
         if (getPieceAtPosition(move.getTo()) == null  && piece.pieceType == ChessPiece.PAWN && move.isHit() == true)
+            isMovePossible = false;
+        // is destination under attack and piece moving is king?
+        if ((getPieceAtPosition(move.getTo()) != null && getPieceAtPosition(move.getTo()).pieceColor != piece.getPieceColor()) || (getPieceAtPosition(move.getTo()) == null)
+                && piece.pieceType == ChessPiece.KING
+                && getTeamMoves(oppositeColor).stream().anyMatch(m -> m.getTo().equals(move.getTo())
+                && m.isHit()))
             isMovePossible = false;
         // is field occupied by friendly piece?
         if (getPieceAtPosition(move.getTo()) != null && getPieceAtPosition(move.getTo()).pieceColor == piece.getPieceColor())
@@ -210,20 +217,32 @@ public class Board {
     }
 // Not sure if code below accounts for hits, added isActive to piece class
     public boolean isMovePossible(MoveMore move) {
+        Color oppositeColor = getPieceAtPosition(move.getFrom()).getPieceColor() == Color.WHITE ? Color.BLACK : Color.WHITE;
         Piece piece = getPieceAtPosition(move.getFrom());
         Piece king = getTeam(piece.getPieceColor()).stream().filter(p -> p.pieceType == ChessPiece.KING).findFirst().get();
         boolean isMovePossible = true;
         // is destination field occupied by enemy piece and move is not pawn move only?
-        if (getPieceAtPosition(move.getTo()) != null && getPieceAtPosition(move.getTo()).pieceColor != piece.getPieceColor() && piece.pieceType == ChessPiece.PAWN && move.isHit() != true)
+        if (getPieceAtPosition(move.getTo()) != null && getPieceAtPosition(move.getTo()).pieceColor != piece.getPieceColor()
+                && piece.pieceType == ChessPiece.PAWN
+                && !move.isHit())
+            isMovePossible = false;
+        // is destination under attack and piece moving is king?
+        if ((getPieceAtPosition(move.getTo()) != null && getPieceAtPosition(move.getTo()).pieceColor != piece.getPieceColor()) || (getPieceAtPosition(move.getTo()) == null)
+                && piece.pieceType == ChessPiece.KING
+                && getTeamMoves(oppositeColor).stream().anyMatch(m -> m.getTo().equals(move.getTo())
+                && m.isHit()))
             isMovePossible = false;
         // is field occupied by friendly piece?
         if (getPieceAtPosition(move.getTo()) != null && getPieceAtPosition(move.getTo()).pieceColor == piece.getPieceColor())
             isMovePossible = false;
         // is destination empty and move is pawn attack?
-        if (getPieceAtPosition(move.getTo()) == null  && piece.pieceType == ChessPiece.PAWN && move.isHit() == true)
+        if (getPieceAtPosition(move.getTo()) == null  && piece.pieceType == ChessPiece.PAWN && move.isHit())
             isMovePossible = false;
         // will the move result in check of self?
-        if (getTeam(piece.getPieceColor()).stream().noneMatch(p -> p.listOfMoveMores.stream().filter(m -> m.getTo().equals(king.getPiecePosition())).noneMatch(m -> isMovePossibleNoSelfCheck(m)))) {
+        if (getTeam(piece.getPieceColor()).stream()
+                .noneMatch(p -> p.listOfMoveMores.stream()
+                        .filter(m -> m.getTo().equals(king.getPiecePosition()))
+                        .noneMatch(m -> isMovePossibleNoSelfCheck(m)))) {
             isMovePossible = false;
         }
 
@@ -275,6 +294,37 @@ public class Board {
 
     public void deactivatePieceAtPosition(Position to) {
         getPieceAtPosition(to).setActive(false);
+    }
+
+    //Verify that isMovePossible is working correctly
+    public static void main(String[] args){
+        Board board = new Board();
+        board.addChessPiece(new Position(File.e, Rank.FIRST), Color.WHITE, ChessPiece.KING);
+        board.addChessPiece(new Position(File.e, Rank.SECOND), Color.WHITE, ChessPiece.PAWN);
+        board.addChessPiece(new Position(File.e, Rank.SEVENTH), Color.BLACK, ChessPiece.PAWN);
+        board.addChessPiece(new Position(File.e, Rank.EIGHTH), Color.BLACK, ChessPiece.KING);
+        board.printBoard();
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.FIRST), new Position(File.e, Rank.SECOND), true))); //false
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.FIRST), new Position(File.e, Rank.SECOND), false))); //false
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.FIRST), new Position(File.e, Rank.SEVENTH), true))); //false
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.EIGHTH), new Position(File.d, Rank.SEVENTH), true))); //true
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.EIGHTH), new Position(File.f, Rank.SEVENTH), false))); //true
+        board.addChessPiece(new Position(File.d, Rank.SECOND), Color.WHITE, ChessPiece.ROOK);
+        board.printBoard();
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.FIRST), new Position(File.e, Rank.SECOND), true))); //false
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.FIRST), new Position(File.e, Rank.SECOND), false))); //false
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.FIRST), new Position(File.e, Rank.SEVENTH), true))); //false
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.EIGHTH), new Position(File.d, Rank.SEVENTH), true))); //true
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.EIGHTH), new Position(File.f, Rank.SEVENTH), true))); //false, king moves to checked spot
+        board.addChessPiece(new Position(File.a, Rank.FIRST), Color.BLACK, ChessPiece.ROOK);
+        board.printBoard();
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.FIRST), new Position(File.e, Rank.SECOND), true))); //false
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.FIRST), new Position(File.e, Rank.SECOND), false))); //false
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.FIRST), new Position(File.e, Rank.SEVENTH), true))); //false
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.EIGHTH), new Position(File.d, Rank.SEVENTH), true))); //false, king moves to checked spot
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.EIGHTH), new Position(File.f, Rank.SEVENTH), true))); //true
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.FIRST), new Position(File.f, Rank.FIRST), true))); //false, king moves to checked spot
+
     }
 }
 

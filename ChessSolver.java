@@ -22,7 +22,7 @@ public class ChessSolver implements Solver, Setup {
 
     @Override
     public void reset() {
-        Board board = new Board();
+        board = new Board();
     }
     public void printBoard() {
         board.printBoard();

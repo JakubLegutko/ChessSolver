@@ -23,11 +23,9 @@ public class ResultWinCommand extends ResultCheckerCommand {
                     for (MoveMore move : possibleMoves) {
                         Board.BoardMemento memento = board.createMemento();
                         applyMove(move, board, piece);
+                        //board.recalculateMoves();
                         piece.eliminateImpossibleMoves(board);
                         boolean isCheckmate = isCheckmateOpposite(color, piece, move);
-                        //undoMove();
-
-                        //piece.eliminateImpossibleMoves(board);
                         if (isCheckmate) {
                             return Optional.of(MoveAdapter.convertMoveMoreToMove(move));
                         }
@@ -47,12 +45,6 @@ public class ResultWinCommand extends ResultCheckerCommand {
 
         }
 
-//        private void undoMove() {
-//            if (memento != null) {
-//                board.restoreFromMemento(memento);
-//                memento = null;
-//            }
-//        }
 
         private boolean isCheckmateOpposite(Color color, Piece attackingpiece, MoveMore move) {
             Color oppositeColor = color == Color.WHITE ? Color.BLACK : Color.WHITE;
@@ -115,7 +107,7 @@ private boolean canBlockCheck(Color color) {
 }
 private boolean canPieceBeCaptured(Piece attackingpiece) {
     Color oppositeColor = attackingpiece.getPieceColor() == Color.WHITE ? Color.BLACK : Color.WHITE;
-    List<MoveMore> allTeamMoves = board.getTeamMoves(oppositeColor);
+    List<MoveMore> allTeamMoves = board.getTeamMovesNoKing(oppositeColor);
             // Check if any move can capture the piece that is checking the king
             for (MoveMore move : allTeamMoves) {
                 if (move.getTo().equals(attackingpiece.getPiecePosition()) && move.isHit()) {

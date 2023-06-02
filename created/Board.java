@@ -152,6 +152,8 @@ public class Board {
 
     }
     public boolean isMovePossibleNoSelfCheck(MoveMore move) {
+        if (getPieceAtPosition(move.getFrom()) == null)
+            System.out.println("No piece at position " + move.getFrom());
         Piece piece = getPieceAtPosition(move.getFrom());
         Color oppositeColor = getPieceAtPosition(move.getFrom()).getPieceColor() == Color.WHITE ? Color.BLACK : Color.WHITE;
         Piece king = getTeam(piece.getPieceColor()).stream().filter(p -> p.pieceType == ChessPiece.KING).findFirst().get();
@@ -218,6 +220,8 @@ public class Board {
     }
 // Not sure if code below accounts for hits, added isActive to piece class
     public boolean isMovePossible(MoveMore move) {
+        if (getPieceAtPosition(move.getFrom()) == null)
+            System.out.println("No piece at position " + move.getFrom());
         Color oppositeColor = getPieceAtPosition(move.getFrom()).getPieceColor() == Color.WHITE ? Color.BLACK : Color.WHITE;
         Piece piece = getPieceAtPosition(move.getFrom());
         Piece king = getTeam(piece.getPieceColor()).stream().filter(p -> p.pieceType == ChessPiece.KING).findFirst().get();
@@ -287,11 +291,9 @@ public class Board {
             }
         }
         // is destination under attack and piece moving is king?
-        if (((getPieceAtPosition(move.getTo()) != null && getPieceAtPosition(move.getTo()).pieceColor != piece.getPieceColor()) || (getPieceAtPosition(move.getTo()) == null))
-                && piece.pieceType == ChessPiece.KING
-                && getTeamMoves(oppositeColor).stream().anyMatch(m -> m.getTo().equals(move.getTo())
-                && m.isHit()))
-            isMovePossible = false;
+//        if ( piece.pieceType == ChessPiece.KING
+//                && getTeamMoves(oppositeColor).stream().anyMatch(m -> m.getTo().equals(move.getTo())))
+//            isMovePossible = false;
         return isMovePossible;
     }
 

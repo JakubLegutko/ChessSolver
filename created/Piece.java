@@ -9,11 +9,19 @@ import edu.uj.po.interfaces.Position;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Piece { // Needs logic for piece promotion
+public class Piece implements Cloneable { // Needs logic for piece promotion
     ChessPiece pieceType;
     Color pieceColor;
     Position piecePosition;
     boolean isActive = true;
+    @Override
+    public Piece clone() {
+        try {
+            return (Piece) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
 
     public boolean isActive() {
         return isActive;
@@ -86,14 +94,25 @@ public class Piece { // Needs logic for piece promotion
         }
     }
     public void executeMove(MoveMore moveMore) {
-        this.piecePosition = moveMore.getTo();
-        this.listOfMoveMores = moveTemplate.generateMoves(piecePosition, pieceColor);
-
+        if (isActive) {
+            this.piecePosition = moveMore.getTo();
+            this.listOfMoveMores = moveTemplate.generateMoves(piecePosition, pieceColor);
+        }
+        else {
+            this.listOfMoveMores.clear();
+        }
     }
     public void recalculateOwnMoves() {
-        this.listOfMoveMores = moveTemplate.generateMoves(piecePosition, pieceColor);
+        if (isActive)
+            this.listOfMoveMores = moveTemplate.generateMoves(piecePosition, pieceColor);
+        else
+            this.listOfMoveMores.clear();
     }
     public void eliminateImpossibleMoves(Board board) {
+        if (!isActive) {
+            this.listOfMoveMores.clear();
+            return;
+        }
         List <MoveMore> listOfMovesToRemove = new ArrayList<>();
         for (MoveMore move : this.listOfMoveMores) {
             if (!board.isMovePossible(move)) {

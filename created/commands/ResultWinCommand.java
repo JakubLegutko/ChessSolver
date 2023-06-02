@@ -77,19 +77,11 @@ public class ResultWinCommand extends ResultCheckerCommand {
     private boolean canKingMove(Color color) {
         // Find the of the king of the specified color
         boolean canMove = true;
-        Color oppositeColor = color == Color.WHITE ? Color.BLACK : Color.WHITE;
-        List<MoveMore> allEnemyMoves = new ArrayList<>();
-        allEnemyMoves = board.getTeamMoves(oppositeColor);
-        for (Piece piece : board.getPieces()) {
-            if (piece.getPieceColor() == color && piece.getPieceType() == ChessPiece.KING) {
-                List<MoveMore> possibleMoves = piece.getListOfMoveMores();
-                for (MoveMore move : possibleMoves) {
-                    if (allEnemyMoves.stream().anyMatch(moveMore -> moveMore.getTo().equals(move.getTo()))) {
-                        canMove = false;
-                    }
-                }
-            }
-        }
+        Position kingPosition = findKingPosition(color);
+        Piece king = board.getPieceAtPosition(kingPosition);
+        List<MoveMore> possibleMoves = king.getListOfMoveMores();
+        if (possibleMoves.isEmpty())
+            canMove = false;
         return canMove;
     }
 
@@ -123,7 +115,7 @@ private boolean canBlockCheck(Color color) {
 }
 private boolean canPieceBeCaptured(Piece attackingpiece) {
     Color oppositeColor = attackingpiece.getPieceColor() == Color.WHITE ? Color.BLACK : Color.WHITE;
-    List<MoveMore> allTeamMoves = board.getTeamMovesNoKing(oppositeColor);
+    List<MoveMore> allTeamMoves = board.getTeamMoves(oppositeColor);
             // Check if any move can capture the piece that is checking the king
             for (MoveMore move : allTeamMoves) {
                 if (move.getTo().equals(attackingpiece.getPiecePosition()) && move.isHit()) {

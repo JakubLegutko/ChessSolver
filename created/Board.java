@@ -162,12 +162,7 @@ public class Board {
         // is destination empty and move is pawn attack?
         if (getPieceAtPosition(move.getTo()) == null  && piece.pieceType == ChessPiece.PAWN && move.isHit() == true)
             isMovePossible = false;
-        // is destination under attack and piece moving is king?
-        if ((getPieceAtPosition(move.getTo()) != null && getPieceAtPosition(move.getTo()).pieceColor != piece.getPieceColor()) || (getPieceAtPosition(move.getTo()) == null)
-                && piece.pieceType == ChessPiece.KING
-                && getTeamMoves(oppositeColor).stream().anyMatch(m -> m.getTo().equals(move.getTo())
-                && m.isHit()))
-            isMovePossible = false;
+
         // is field occupied by friendly piece?
         if (getPieceAtPosition(move.getTo()) != null && getPieceAtPosition(move.getTo()).pieceColor == piece.getPieceColor())
             isMovePossible = false;
@@ -213,6 +208,12 @@ public class Board {
                 }
             }
         }
+        // is destination under attack and piece moving is king?
+        if (((getPieceAtPosition(move.getTo()) != null && getPieceAtPosition(move.getTo()).pieceColor != piece.getPieceColor()) || (getPieceAtPosition(move.getTo()) == null))
+                && piece.pieceType == ChessPiece.KING
+                && getTeamMoves(oppositeColor).stream().anyMatch(m -> m.getTo().equals(move.getTo())
+                && m.isHit()))
+            isMovePossible = false;
         return isMovePossible;
     }
 // Not sure if code below accounts for hits, added isActive to piece class
@@ -226,12 +227,8 @@ public class Board {
                 && piece.pieceType == ChessPiece.PAWN
                 && !move.isHit())
             isMovePossible = false;
-        // is destination under attack and piece moving is king?
-        if ((getPieceAtPosition(move.getTo()) != null && getPieceAtPosition(move.getTo()).pieceColor != piece.getPieceColor()) || (getPieceAtPosition(move.getTo()) == null)
-                && piece.pieceType == ChessPiece.KING
-                && getTeamMoves(oppositeColor).stream().anyMatch(m -> m.getTo().equals(move.getTo())
-                && m.isHit()))
-            isMovePossible = false;
+
+
         // is field occupied by friendly piece?
         if (getPieceAtPosition(move.getTo()) != null && getPieceAtPosition(move.getTo()).pieceColor == piece.getPieceColor())
             isMovePossible = false;
@@ -289,6 +286,12 @@ public class Board {
                 }
             }
         }
+        // is destination under attack and piece moving is king?
+        if (((getPieceAtPosition(move.getTo()) != null && getPieceAtPosition(move.getTo()).pieceColor != piece.getPieceColor()) || (getPieceAtPosition(move.getTo()) == null))
+                && piece.pieceType == ChessPiece.KING
+                && getTeamMoves(oppositeColor).stream().anyMatch(m -> m.getTo().equals(move.getTo())
+                && m.isHit()))
+            isMovePossible = false;
         return isMovePossible;
     }
 
@@ -303,6 +306,7 @@ public class Board {
         board.addChessPiece(new Position(File.e, Rank.SECOND), Color.WHITE, ChessPiece.PAWN);
         board.addChessPiece(new Position(File.e, Rank.SEVENTH), Color.BLACK, ChessPiece.PAWN);
         board.addChessPiece(new Position(File.e, Rank.EIGHTH), Color.BLACK, ChessPiece.KING);
+        board.recalculateMoves();
         board.printBoard();
         System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.FIRST), new Position(File.e, Rank.SECOND), true))); //false
         System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.FIRST), new Position(File.e, Rank.SECOND), false))); //false
@@ -310,20 +314,32 @@ public class Board {
         System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.EIGHTH), new Position(File.d, Rank.SEVENTH), true))); //true
         System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.EIGHTH), new Position(File.f, Rank.SEVENTH), false))); //true
         board.addChessPiece(new Position(File.d, Rank.SECOND), Color.WHITE, ChessPiece.ROOK);
-        board.printBoard();
-        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.FIRST), new Position(File.e, Rank.SECOND), true))); //false
-        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.FIRST), new Position(File.e, Rank.SECOND), false))); //false
-        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.FIRST), new Position(File.e, Rank.SEVENTH), true))); //false
-        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.EIGHTH), new Position(File.d, Rank.SEVENTH), true))); //true
-        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.EIGHTH), new Position(File.f, Rank.SEVENTH), true))); //false, king moves to checked spot
-        board.addChessPiece(new Position(File.a, Rank.FIRST), Color.BLACK, ChessPiece.ROOK);
+        board.recalculateMoves();
         board.printBoard();
         System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.FIRST), new Position(File.e, Rank.SECOND), true))); //false
         System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.FIRST), new Position(File.e, Rank.SECOND), false))); //false
         System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.FIRST), new Position(File.e, Rank.SEVENTH), true))); //false
         System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.EIGHTH), new Position(File.d, Rank.SEVENTH), true))); //false, king moves to checked spot
         System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.EIGHTH), new Position(File.f, Rank.SEVENTH), true))); //true
-        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.FIRST), new Position(File.f, Rank.FIRST), true))); //false, king moves to checked spot
+        board.addChessPiece(new Position(File.a, Rank.FIRST), Color.BLACK, ChessPiece.ROOK);
+        board.recalculateMoves();
+        board.printBoard();
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.FIRST), new Position(File.e, Rank.SECOND), true))); //false
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.FIRST), new Position(File.e, Rank.SECOND), false))); //false
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.FIRST), new Position(File.e, Rank.SEVENTH), true))); //false
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.EIGHTH), new Position(File.d, Rank.SEVENTH), true))); //false, king moves to checked spot
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.EIGHTH), new Position(File.f, Rank.SEVENTH), true))); //true
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.FIRST), new Position(File.f, Rank.FIRST), true))); //false, king moves to checked spot but only on paper, would have to recalculate after move
+        board.addChessPiece(new Position(File.f, Rank.SIXTH), Color.BLACK, ChessPiece.ROOK);
+        board.recalculateMoves();
+        board.printBoard();
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.EIGHTH), new Position(File.f, Rank.SEVENTH), true))); //true
+        board.addChessPiece(new Position(File.f, Rank.SECOND), Color.WHITE, ChessPiece.ROOK);
+        board.recalculateMoves();
+        board.printBoard();
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.e, Rank.EIGHTH), new Position(File.f, Rank.SEVENTH), true))); //true, king is shielded by rook ERROR!
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.f, Rank.SECOND), new Position(File.f, Rank.SEVENTH), true))); //false, queen can't pass through rook
+        System.out.println(board.isMovePossible(new MoveMore(new Position(File.f, Rank.SECOND), new Position(File.f, Rank.SIXTH), true))); //true, queen can capture rook
 
     }
 }

@@ -22,10 +22,13 @@ public class ResultWinCommand extends ResultCheckerCommand {
                     List<MoveMore> possibleMoves = piece.getListOfMoveMores();
                     for (MoveMore move : possibleMoves) {
                         Board.BoardMemento memento = board.createMemento();
-                        applyMove(move, board, piece);
-                        //board.recalculateMoves();
-                        piece.eliminateImpossibleMoves(board);
-                        boolean isCheckmate = isCheckmateOpposite(color, piece, move);
+                        board.executeMove(move);
+                        //board.printBoard();
+                        //System.out.println(" ");
+                        //System.out.println("Printed board for move "+ move.getFrom() + " to " + move.getTo());
+                        board.recalculateMoves();
+
+                        boolean isCheckmate = isCheckmateOpposite(color, board, move);
                         if (isCheckmate) {
                             return Optional.of(MoveAdapter.convertMoveMoreToMove(move));
                         }
@@ -37,18 +40,15 @@ public class ResultWinCommand extends ResultCheckerCommand {
             return Optional.empty();
         }
 
-        private void applyMove(MoveMore move, Board board, Piece piece) {
-            if (board.getPieceAtPosition(move.getTo()) != null)
-                if (board.getPieceAtPosition(move.getTo()).getPieceColor() != piece.getPieceColor())
-                    board.deactivatePieceAtPosition(move.getTo());
-            piece.executeMove(move);
+        private void applyMove(MoveMore move, Board board) {
+            board.executeMove(move);
 
         }
 
 
-        private boolean isCheckmateOpposite(Color color, Piece attackingpiece, MoveMore move) {
+        private boolean isCheckmateOpposite(Color color, Board board, MoveMore move) {
             Color oppositeColor = color == Color.WHITE ? Color.BLACK : Color.WHITE;
-
+            Piece attackingpiece = board.getPieceAtPosition(move.getTo());
             // Check if the opposite color's king is in check
             if (!isKingInCheck(oppositeColor)) {
                 return false; // King is not in check, not a checkmate
@@ -68,12 +68,14 @@ public class ResultWinCommand extends ResultCheckerCommand {
 
     private boolean canKingMove(Color color) {
         // Find the of the king of the specified color
-        boolean canMove = true;
+        boolean canMove;
         Position kingPosition = findKingPosition(color);
         Piece king = board.getPieceAtPosition(kingPosition);
         List<MoveMore> possibleMoves = king.getListOfMoveMores();
-        if (possibleMoves.isEmpty())
+        if (possibleMoves == null)
             canMove = false;
+        else
+            canMove = true;
         return canMove;
     }
 
@@ -110,7 +112,7 @@ private boolean canPieceBeCaptured(Piece attackingpiece) {
     List<MoveMore> allTeamMoves = board.getTeamMovesNoKing(oppositeColor);
             // Check if any move can capture the piece that is checking the king
             for (MoveMore move : allTeamMoves) {
-                if (move.getTo().equals(attackingpiece.getPiecePosition()) && move.isHit()) {
+                if (move.getTo().equals(attackingpiece.getPiecePosition())) {
                     return true; // Piece can be captured
                 }
             }

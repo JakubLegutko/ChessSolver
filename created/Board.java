@@ -335,10 +335,10 @@ public class Board {
                 }
             }
         }
-        // is destination under attack and piece moving is king?
-//        if ( piece.pieceType == ChessPiece.KING
-//                && getTeamMoves(oppositeColor).stream().anyMatch(m -> m.getTo().equals(move.getTo())))
-//            isMovePossible = false;
+//         is destination under attack and piece moving is king?
+        if ( piece.pieceType == ChessPiece.KING
+                && getTeamMoves(oppositeColor).stream().anyMatch(m -> m.getTo().equals(move.getTo())))
+            isMovePossible = false;
         return isMovePossible;
     }
 

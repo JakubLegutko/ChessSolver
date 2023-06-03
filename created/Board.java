@@ -167,18 +167,18 @@ public class Board {
     }
 
     public List<Piece> getTeam(Color color) {
-        List<Piece> pieces = new ArrayList<>();
-        for (Piece piece : this.pieces) {
+        List<Piece> teamPieces = new ArrayList<>();
+        for (Piece piece : pieces) {
             if (piece.getPieceColor() == color) {
-                pieces.add(piece);
+                teamPieces.add(piece);
             }
         }
-        return pieces;
+        return teamPieces;
 
     }
     public List<MoveMore> getTeamMovesNoKing(Color color) {
         List<MoveMore> moves = new ArrayList<>();
-        for (Piece piece : this.pieces) {
+        for (Piece piece : pieces) {
             if (piece.getPieceColor() == color && piece.pieceType != ChessPiece.KING) {
                 moves.addAll(piece.listOfMoveMores);
             }
@@ -186,9 +186,10 @@ public class Board {
         return moves;
 
     }
+    // Seems to be taking an old board?!
     public List<MoveMore> getTeamMoves(Color color) {
         List<MoveMore> moves = new ArrayList<>();
-        for (Piece piece : this.pieces) {
+        for (Piece piece : pieces) {
             if (piece.getPieceColor() == color) {
                 moves.addAll(piece.listOfMoveMores);
             }

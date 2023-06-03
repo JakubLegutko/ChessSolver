@@ -109,7 +109,7 @@ private boolean canBlockCheck(Color color) {
 }
 private boolean canPieceBeCaptured(Piece attackingpiece) {
     Color oppositeColor = attackingpiece.getPieceColor() == Color.WHITE ? Color.BLACK : Color.WHITE;
-    List<MoveMore> allTeamMoves = board.getTeamMovesNoKing(oppositeColor);
+    List<MoveMore> allTeamMoves = board.getTeamMoves(oppositeColor);
             // Check if any move can capture the piece that is checking the king
             for (MoveMore move : allTeamMoves) {
                 if (move.getTo().equals(attackingpiece.getPiecePosition())) {

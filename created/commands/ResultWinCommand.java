@@ -13,7 +13,7 @@ public class ResultWinCommand extends ResultCheckerCommand {
 
     }
     private Board board;
-
+@Override
     public Optional<Move> checkResultImpl(Color color, Board boards) {
         this.board = boards;
             for (Piece piece : board.getPieces()) {

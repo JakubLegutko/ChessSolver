@@ -50,15 +50,46 @@ public class Board {
         return resultCheckerCommand.checkResult(color, this);
     }
 
+    public void executeMove(MoveMore moveMore){
+        Piece piece = getPieceAtPosition(moveMore.getFrom());
+        if (piece == null) {
+            throw new IllegalArgumentException("No piece at position " + moveMore.getFrom());
+        }
+        if (getPieceAtPosition(moveMore.getTo()) != null) {
+            deactivatePieceAtPosition(moveMore.getTo());
+        }
+        piece.setPiecePosition(moveMore.getTo());
+        piece.recalculateOwnMoves();
+    }
+
     public void recalculateMoves() {
         for (Piece existingPiece : pieces) {
             existingPiece.recalculateOwnMoves();
 
         }
         for (Piece existingPiece : pieces) {
-            existingPiece.eliminateImpossibleMoves(this);
+            List<MoveMore> listOfMovesToRemove = new ArrayList<>();
+            for (MoveMore move : existingPiece.listOfMoveMores){
+                if (!isMovePossible(move)){
+                    listOfMovesToRemove.add(move);
+                }
+            }
+            existingPiece.listOfMoveMores.removeAll(listOfMovesToRemove);
         }
     }
+    //    public void eliminateImpossibleMoves(Board board) {
+//        if (!isActive) {
+//            this.listOfMoveMores.clear();
+//            return;
+//        }
+//        List <MoveMore> listOfMovesToRemove = new ArrayList<>();
+//        for (MoveMore move : this.listOfMoveMores) {
+//            if (!board.isMovePossible(move)) {
+//                listOfMovesToRemove.add(move);
+//            }
+//        }
+//        this.listOfMoveMores.removeAll(listOfMovesToRemove);
+//    }
     public void printBoard() {
         System.out.println("New board:");
         System.out.println("   A   B   C   D   E   F   G   H");
@@ -100,9 +131,23 @@ public class Board {
         private final List<Piece> pieces;
         private final List<Position> fields;
 
+        public List<Piece> deepCopy(List<Piece> original) {
+            List<Piece> copy = new ArrayList<>(original.size());
+            for (Piece piece : original) {
+                copy.add(piece.clone());
+            }
+            return copy;
+        }
+        public List<Position> deepCopyFields(List<Position> original) {
+            List<Position> copy = new ArrayList<>(original.size());
+            for (Position position : original) {
+                copy.add(new Position(position.file(), position.rank()));
+            }
+            return copy;
+        }
         private BoardMemento(List<Piece> pieces, List<Position> fields) {
-            this.pieces = pieces;
-            this.fields = fields;
+            this.pieces = deepCopy(pieces);
+            this.fields = deepCopyFields(fields);
         }
 
         private List<Piece> getPieces() {

@@ -93,34 +93,14 @@ public class Piece implements Cloneable { // Needs logic for piece promotion
                 return null;
         }
     }
-    public void executeMove(MoveMore moveMore) {
-        if (isActive) {
-            this.piecePosition = moveMore.getTo();
-            this.listOfMoveMores = moveTemplate.generateMoves(piecePosition, pieceColor);
-        }
-        else {
-            this.listOfMoveMores.clear();
-        }
-    }
+
     public void recalculateOwnMoves() {
         if (isActive)
             this.listOfMoveMores = moveTemplate.generateMoves(piecePosition, pieceColor);
         else
             this.listOfMoveMores.clear();
     }
-    public void eliminateImpossibleMoves(Board board) {
-        if (!isActive) {
-            this.listOfMoveMores.clear();
-            return;
-        }
-        List <MoveMore> listOfMovesToRemove = new ArrayList<>();
-        for (MoveMore move : this.listOfMoveMores) {
-            if (!board.isMovePossible(move)) {
-                listOfMovesToRemove.add(move);
-            }
-        }
-        this.listOfMoveMores.removeAll(listOfMovesToRemove);
-    }
+
     public Piece(ChessPiece pieceType, Color pieceColor, Position piecePosition) {
         this.pieceType = pieceType;
         this.pieceColor = pieceColor;
@@ -129,3 +109,25 @@ public class Piece implements Cloneable { // Needs logic for piece promotion
         listOfMoveMores = moveTemplate.generateMoves(piecePosition, pieceColor);
     }
 }
+//    public void eliminateImpossibleMoves(Board board) {
+//        if (!isActive) {
+//            this.listOfMoveMores.clear();
+//            return;
+//        }
+//        List <MoveMore> listOfMovesToRemove = new ArrayList<>();
+//        for (MoveMore move : this.listOfMoveMores) {
+//            if (!board.isMovePossible(move)) {
+//                listOfMovesToRemove.add(move);
+//            }
+//        }
+//        this.listOfMoveMores.removeAll(listOfMovesToRemove);
+//    }
+//    public void executeMove(MoveMore moveMore) {
+//        if (isActive) {
+//            this.piecePosition = moveMore.getTo();
+//            this.listOfMoveMores = moveTemplate.generateMoves(piecePosition, pieceColor);
+//        }
+//        else {
+//            this.listOfMoveMores.clear();
+//        }
+//    }

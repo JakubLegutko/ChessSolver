@@ -23,11 +23,12 @@ public class ResultWinCommand extends ResultCheckerCommand {
                     for (MoveMore move : possibleMoves) {
                         Board.BoardMemento memento = board.createMemento();
                         board.executeMove(move);
-                        //board.printBoard();
+                        board.printBoard();
                         //System.out.println(" ");
                         //System.out.println("Printed board for move "+ move.getFrom() + " to " + move.getTo());
                         board.recalculateMoves();
-
+//                        if (piece.getPieceType() == ChessPiece.PAWN)
+//                        handleEnPassant(move);
                         boolean isCheckmate = isCheckmateOpposite(color, board, move);
                         if (isCheckmate) {
                             return Optional.of(MoveAdapter.convertMoveMoreToMove(move));
@@ -40,12 +41,14 @@ public class ResultWinCommand extends ResultCheckerCommand {
             return Optional.empty();
         }
 
-        private void applyMove(MoveMore move, Board board) {
-            board.executeMove(move);
 
-        }
-
-
+//        private void handleEnPassant(MoveMore move) {
+//            if (move.isEnPassant()) {
+//                Position position = move.getTo();
+//                Piece piece = board.getPieceAtPosition(position);
+//                board.removePiece(piece);
+//            }
+//        }
         private boolean isCheckmateOpposite(Color color, Board board, MoveMore move) {
             Color oppositeColor = color == Color.WHITE ? Color.BLACK : Color.WHITE;
             Piece attackingpiece = board.getPieceAtPosition(move.getTo());
@@ -54,15 +57,31 @@ public class ResultWinCommand extends ResultCheckerCommand {
                 return false; // King is not in check, not a checkmate
             }
             boolean isCheck = true;
-                    // Try each move and see if it eliminates the check this is fishy, but should work
-                    if(canPieceBeCaptured(attackingpiece)) //UNRELIABLE!!!
-                        isCheck = false;
-//                    if(canBlockCheck(color))
-//                        isCheck = false;
-//
-//                    if(canKingMove(oppositeColor)) //UNRELIABLE!!!
-//                        isCheck = false;
+            for (Piece pieced : board.getPieces()) {
+                if (!canKingMove(oppositeColor))
+                    continue;
+                if (pieced.isActive())
+                    if (pieced.getPieceColor() == oppositeColor) {
+                        List<MoveMore> possibleMoves = pieced.getListOfMoveMores();
+                        for (MoveMore moves : possibleMoves) {
+                            Board.BoardMemento memento2 = board.createMemento();
+                            board.executeMove(moves);
+                            board.printBoard();
+                            //System.out.println("Printed board for counter "+ moves.getFrom() + " to " + moves.getTo());
+                            board.recalculateMoves();
+                            if(!isKingInCheck(oppositeColor))
+                                isCheck = false;
+                            board.restoreFromMemento(memento2);
+                            board.recalculateMoves();
+                            //board.printBoard();
+                            //System.out.println("Counter restored");
+                            if (!isCheck) {
+                                return false; // King can move, not a checkmate
+                            }
 
+                        }
+                    }
+            }
             return isCheck; // If no moves can eliminate the check, it's a checkmate
         }
 
@@ -72,7 +91,7 @@ public class ResultWinCommand extends ResultCheckerCommand {
         Position kingPosition = findKingPosition(color);
         Piece king = board.getPieceAtPosition(kingPosition);
         List<MoveMore> possibleMoves = king.getListOfMoveMores();
-        if (possibleMoves == null)
+        if (possibleMoves.size() == 0)
             canMove = false;
         else
             canMove = true;

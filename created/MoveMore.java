@@ -6,6 +6,12 @@ public class MoveMore {
     Position from;
     Position to;
 
+
+    Boolean enPassant;
+    public boolean isEnPassant() {
+        return enPassant;
+    }
+
     public Position getFrom() {
         return from;
     }
@@ -35,5 +41,6 @@ public class MoveMore {
         this.from = from;
         this.to = to;
         this.isHit = isHit;
+        this.enPassant = false;
     }
 }

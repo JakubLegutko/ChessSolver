@@ -44,7 +44,7 @@ public class ResultDrawCommand extends ResultCheckerCommand {
         }
         public boolean canAnyPieceMoveOpposite(Color color) {
             Color oppositeColor = color == Color.WHITE ? Color.BLACK : Color.WHITE;
-            if(board.getTeamMoves(oppositeColor) != null)
+            if(board.getTeamMoves(oppositeColor).size() == 0)
                 return true;
             else
                 return false;

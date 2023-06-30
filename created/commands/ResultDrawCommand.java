@@ -25,17 +25,15 @@ public class ResultDrawCommand extends ResultCheckerCommand {
                     if (piece.getPieceColor() == color) {
                         List<MoveMore> possibleMoves = piece.getListOfMoveMores();
                         for (MoveMore move : possibleMoves) {
-                            Board.BoardMemento memento = board.createMemento();
                             board.executeMove(move);
                             //board.printBoard();
                             //System.out.println(" ");
                             //System.out.println("Printed board for move "+ move.getFrom() + " to " + move.getTo());
-                            board.recalculateMoves();
                             boolean isStalemate = canAnyPieceMoveOpposite(color);
                             if (isStalemate) {
                                 return Optional.of(MoveAdapter.convertMoveMoreToMove(move));
                             }
-                            board.restoreFromMemento(memento);
+                            board.undoMove();
                         }
                     }
             }

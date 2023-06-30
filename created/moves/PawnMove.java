@@ -71,6 +71,10 @@ public class PawnMove extends MoveTemplate {
                     listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() - 1], rank[position.rank().ordinal() + 1]),true));
         }
     // Needs logic for En Passant
+    // check if the attacking pawn has moved exactly 3 ranks (is on rank 5 or 4 for white, 3 or 4 for black)
+    // check if the attacked pawn is on the same file and on the 5th rank (for white) or 4th rank (for black)
+// check if the attacked pawn has moved exactly 2 ranks (is on rank 7 or 6 for white, 2 or 3 for black)
+
 
         return listOfMoveMores;
     }

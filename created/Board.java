@@ -4,7 +4,7 @@ import created.commands.ResultDrawCommand;
 import created.commands.ResultWinCommand;
 import edu.uj.po.interfaces.*;
 import util.result;
-
+import java.util.Stack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,7 @@ import java.util.Optional;
 public class Board {
     private List<Piece> pieces;
     private List<Position> fields = new ArrayList<>();
+    private Stack<BoardMemento> mementoStack;
     ResultCheckerCommand resultCheckerCommand;
 
     public void setFields(List<Position> fields) {
@@ -37,9 +38,8 @@ public class Board {
             for (int j = 0; j < 8; j++)
                 fields.add(new Position(File.values()[i], Rank.values()[j]));
         setFields(fields);
-
+        mementoStack = new Stack<>();
     }
-
 
     public Optional<Move> checkResult(Color color, result result) {
         recalculateMoves();
@@ -51,6 +51,7 @@ public class Board {
     }
 
     public void executeMove(MoveMore moveMore){
+        mementoStack.push(createMemento());
         Piece piece = getPieceAtPosition(moveMore.getFrom());
         if (piece == null) {
             throw new IllegalArgumentException("No piece at position " + moveMore.getFrom());
@@ -59,9 +60,13 @@ public class Board {
             deactivatePieceAtPosition(moveMore.getTo());
         }
         piece.setPiecePosition(moveMore.getTo());
-        piece.recalculateOwnMoves();
+        recalculateMoves();
     }
 
+    public void undoMove(){
+        restoreFromMemento(mementoStack.pop());
+        recalculateMoves();
+    }
     public void recalculateMoves() {
         for (Piece existingPiece : pieces) {
             existingPiece.recalculateOwnMoves();
@@ -77,19 +82,7 @@ public class Board {
             existingPiece.listOfMoveMores.removeAll(listOfMovesToRemove);
         }
     }
-    //    public void eliminateImpossibleMoves(Board board) {
-//        if (!isActive) {
-//            this.listOfMoveMores.clear();
-//            return;
-//        }
-//        List <MoveMore> listOfMovesToRemove = new ArrayList<>();
-//        for (MoveMore move : this.listOfMoveMores) {
-//            if (!board.isMovePossible(move)) {
-//                listOfMovesToRemove.add(move);
-//            }
-//        }
-//        this.listOfMoveMores.removeAll(listOfMovesToRemove);
-//    }
+
     public void printBoard() {
         System.out.println("New board:");
         System.out.println("   A   B   C   D   E   F   G   H");
@@ -176,17 +169,7 @@ public class Board {
         return teamPieces;
 
     }
-    public List<MoveMore> getTeamMovesNoKing(Color color) {
-        List<MoveMore> moves = new ArrayList<>();
-        for (Piece piece : pieces) {
-            if (piece.getPieceColor() == color && piece.pieceType != ChessPiece.KING) {
-                moves.addAll(piece.listOfMoveMores);
-            }
-        }
-        return moves;
 
-    }
-    // Seems to be taking an old board?!
     public List<MoveMore> getTeamMoves(Color color) {
         List<MoveMore> moves = new ArrayList<>();
         for (Piece piece : pieces) {
@@ -256,15 +239,9 @@ public class Board {
                 }
             }
         }
-//        // is destination under attack and piece moving is king?
-//        if (((getPieceAtPosition(move.getTo()) != null && getPieceAtPosition(move.getTo()).pieceColor != piece.getPieceColor()) || (getPieceAtPosition(move.getTo()) == null))
-//                && piece.pieceType == ChessPiece.KING
-//                && getTeamMoves(oppositeColor).stream().anyMatch(m -> m.getTo().equals(move.getTo())
-//                && m.isHit()))
-//            isMovePossible = false;
+
         return isMovePossible;
     }
-// Not sure if code below accounts for hits, added isActive to piece class
     public boolean isMovePossible(MoveMore move) {
         if (getPieceAtPosition(move.getFrom()) == null)
             System.out.println("No piece at position " + move.getFrom());

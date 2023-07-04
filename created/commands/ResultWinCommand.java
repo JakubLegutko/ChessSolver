@@ -3,7 +3,6 @@ package created.commands;
 import created.*;
 import edu.uj.po.interfaces.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +28,7 @@ public class ResultWinCommand extends ResultCheckerCommand {
                         //board.recalculateMoves();
 //                        if (piece.getPieceType() == ChessPiece.PAWN)
 //                        handleEnPassant(move);
-                        boolean isCheckmate = isCheckmateOpposite(color, board, move);
+                        boolean isCheckmate = isCheckmateOpposite(color, move);
                         if (isCheckmate) {
                             return Optional.of(MoveAdapter.convertMoveMoreToMove(move));
                         }
@@ -49,17 +48,20 @@ public class ResultWinCommand extends ResultCheckerCommand {
 //                board.removePiece(piece);
 //            }
 //        }
-        private boolean isCheckmateOpposite(Color color, Board board, MoveMore move) {
+        private boolean isCheckmateOpposite(Color color,  MoveMore move) {
             Color oppositeColor = color == Color.WHITE ? Color.BLACK : Color.WHITE;
             Piece attackingpiece = board.getPieceAtPosition(move.getTo());
+            Piece king = board.getPieceAtPosition(findKingPosition(oppositeColor));
+
             // Check if the opposite color's king is in check
             if (!isKingInCheck(oppositeColor)) {
                 return false; // King is not in check, not a checkmate
             }
             boolean isCheck = true;
             for (Piece pieced : board.getPieces()) {
-                if (!canKingMove(oppositeColor))
-                    continue;
+                if (pieced.getPieceType() == ChessPiece.KING)
+                    if (!canKingMove(oppositeColor))
+                        continue;
                 if (pieced.isActive())
                     if (pieced.getPieceColor() == oppositeColor) {
                         List<MoveMore> possibleMoves = pieced.getListOfMoveMores();

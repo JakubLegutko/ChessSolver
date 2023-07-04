@@ -256,12 +256,7 @@ public class Board {
                 }
             }
         }
-//        // is destination under attack and piece moving is king?
-//        if (((getPieceAtPosition(move.getTo()) != null && getPieceAtPosition(move.getTo()).pieceColor != piece.getPieceColor()) || (getPieceAtPosition(move.getTo()) == null))
-//                && piece.pieceType == ChessPiece.KING
-//                && getTeamMoves(oppositeColor).stream().anyMatch(m -> m.getTo().equals(move.getTo())
-//                && m.isHit()))
-//            isMovePossible = false;
+
         return isMovePossible;
     }
 // Not sure if code below accounts for hits, added isActive to piece class
@@ -283,7 +278,7 @@ public class Board {
         if (getPieceAtPosition(move.getTo()) != null && getPieceAtPosition(move.getTo()).getPieceColor() == piece.getPieceColor())
             isMovePossible = false;
         // is destination empty and move is pawn attack?
-        if (getPieceAtPosition(move.getTo()) == null  && piece.pieceType == ChessPiece.PAWN && move.isHit())
+        if (getPieceAtPosition(move.getTo()) == null && piece.pieceType == ChessPiece.PAWN && move.isHit())
             isMovePossible = false;
         // will the move result in check of self?
         if (getTeam(piece.getPieceColor()).stream()
@@ -337,9 +332,14 @@ public class Board {
             }
         }
 //         is destination under attack and piece moving is king?
-        if ( piece.pieceType == ChessPiece.KING
-                && getTeamMoves(oppositeColor).stream().anyMatch(m -> m.getTo().equals(move.getTo())))
-            isMovePossible = false;
+        if (piece.pieceType == ChessPiece.KING) {
+            for (MoveMore movee : getTeamMoves(oppositeColor)) {
+                if (movee.getTo().equals(move.getTo())) {
+                    isMovePossible = false;
+                }
+            }
+
+        }
         return isMovePossible;
     }
 

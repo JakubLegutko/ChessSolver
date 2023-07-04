@@ -59,7 +59,7 @@ public class Board {
             deactivatePieceAtPosition(moveMore.getTo());
         }
         piece.setPiecePosition(moveMore.getTo());
-        piece.recalculateOwnMoves();
+        recalculateMoves();
     }
 
     public void recalculateMoves() {
@@ -125,6 +125,7 @@ public class Board {
     public void restoreFromMemento(BoardMemento memento) {
         this.pieces = memento.getPieces();
         this.fields = memento.getFields();
+        recalculateMoves();
     }
 
     public class BoardMemento {
@@ -186,7 +187,6 @@ public class Board {
         return moves;
 
     }
-    // Seems to be taking an old board?!
     public List<MoveMore> getTeamMoves(Color color) {
         List<MoveMore> moves = new ArrayList<>();
         for (Piece piece : pieces) {

@@ -26,7 +26,7 @@ public class ResultWinCommand extends ResultCheckerCommand {
                         board.printBoard();
                         //System.out.println(" ");
                         //System.out.println("Printed board for move "+ move.getFrom() + " to " + move.getTo());
-                        board.recalculateMoves();
+                        //board.recalculateMoves();
 //                        if (piece.getPieceType() == ChessPiece.PAWN)
 //                        handleEnPassant(move);
                         boolean isCheckmate = isCheckmateOpposite(color, board, move);
@@ -68,11 +68,11 @@ public class ResultWinCommand extends ResultCheckerCommand {
                             board.executeMove(moves);
                             board.printBoard();
                             //System.out.println("Printed board for counter "+ moves.getFrom() + " to " + moves.getTo());
-                            board.recalculateMoves();
+                            //board.recalculateMoves();
                             if(!isKingInCheck(oppositeColor))
                                 isCheck = false;
                             board.restoreFromMemento(memento2);
-                            board.recalculateMoves();
+                            //board.recalculateMoves();
                             //board.printBoard();
                             //System.out.println("Counter restored");
                             if (!isCheck) {

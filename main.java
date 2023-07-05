@@ -11,6 +11,8 @@ public class main {
                     .ifPresent(System.out::println);
             chessSolver.printBoard();
 
+
+            new TestRunner().run();
 //        chessSolver.findStalemateInOneMove(color)
 //                .ifPresent(System.out::println);
         }
@@ -24,6 +26,8 @@ public class main {
             chessSolver.addChessPiece(new Position(File.h, Rank.SECOND), Color.WHITE, ChessPiece.KING);
             return Color.BLACK;
         }
+
+    // Mate C7-C8
     private static Color Setup_MateByPromotion(ChessSolver chessSolver){
         chessSolver.addChessPiece(new Position(File.f, Rank.EIGHTH), Color.BLACK, ChessPiece.KING);
         chessSolver.addChessPiece(new Position(File.g, Rank.EIGHTH), Color.BLACK, ChessPiece.ROOK);

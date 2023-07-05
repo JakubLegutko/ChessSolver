@@ -1,7 +1,7 @@
 #!/bin/bash
 
 COMPRESED_FILE='vim.tgz'
-USER='krol_1197262'
+USER='legutko_1196904'
 
 tar -zcvf ${COMPRESED_FILE} *
 scp -i ~/.ssh/id_rsa ${COMPRESED_FILE} ${USER}@spk-ssh.if.uj.edu.pl:/home/${USER}

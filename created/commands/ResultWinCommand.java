@@ -15,7 +15,8 @@ public class ResultWinCommand extends ResultCheckerCommand {
 @Override
     public Optional<Move> checkResultImpl(Color color, Board boards) {
         this.board = boards;
-            for (Piece piece : board.getPieces()) {
+        List<Piece> pieces = board.getPieces();
+            for (Piece piece : pieces) {
                 if (piece.isActive())
                     if (piece.getPieceColor() == color) {
                     List<MoveMore> possibleMoves = piece.getListOfMoveMores();
@@ -58,7 +59,8 @@ public class ResultWinCommand extends ResultCheckerCommand {
                 return false; // King is not in check, not a checkmate
             }
             boolean isCheck = true;
-            for (Piece pieced : board.getPieces()) {
+            List<Piece> pieces = board.getPieces();
+            for (Piece pieced : pieces) {
                 if (pieced.getPieceType() == ChessPiece.KING)
                     if (!canKingMove(oppositeColor))
                         continue;

@@ -18,11 +18,11 @@ public class RookMove extends MoveTemplate {
         List<MoveMore> listOfMoveMores = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
             if (i != position.file().ordinal()) // skip standing still
-                listOfMoveMores.add(new MoveMore(position, new Position(file[i],rank[position.rank().ordinal()]), true));
+                listOfMoveMores.add(new MoveMore(position, new Position(file[i],rank[position.rank().ordinal()]), true, false));
         }
         for (int i = 0; i < 8; i++) {
             if (i != position.rank().ordinal()) // skip standing still
-                listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal()],rank[i]), true));
+                listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal()],rank[i]), true, false));
         }
         return listOfMoveMores;
     }

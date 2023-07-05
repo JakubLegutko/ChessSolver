@@ -26,7 +26,7 @@ public class KnightMove extends MoveTemplate {
                     int rankIndex = position.rank().ordinal() + offset2;
                     if (isValidIndex(fileIndex) && isValidIndex(rankIndex)) {
                         Position targetPosition = new Position(files[fileIndex], ranks[rankIndex]);
-                        listOfMoveMores.add(new MoveMore(position, targetPosition, true));
+                        listOfMoveMores.add(new MoveMore(position, targetPosition, true, false));
                     }
                 }
             }

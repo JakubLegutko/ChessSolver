@@ -42,10 +42,10 @@ public class PawnMove extends MoveTemplate {
         File file [] = File.values();
 
         if (startingPositionsBlack.contains(position) && color == Color.BLACK) {
-            listOfMoveMores.add(new MoveMore(position, new Position(position.file(), Rank.FIFTH),false));
+            listOfMoveMores.add(new MoveMore(position, new Position(position.file(), Rank.FIFTH),false, false));
         }
         else if (startingPositionsWhite.contains(position) && color == Color.WHITE) {
-            listOfMoveMores.add(new MoveMore(position, new Position(position.file(), Rank.FOURTH),false));
+            listOfMoveMores.add(new MoveMore(position, new Position(position.file(), Rank.FOURTH),false, false));
         }
 
             if (color == Color.BLACK) {
@@ -53,24 +53,40 @@ public class PawnMove extends MoveTemplate {
                     listOfMoveMores = queenMove.generateMovesImpl(position, color);
                     //System.out.println("black promotion");
                 }else
-                    listOfMoveMores.add(new MoveMore(position, new Position(position.file(), rank[position.rank().ordinal() - 1]),false));
+                    listOfMoveMores.add(new MoveMore(position, new Position(position.file(), rank[position.rank().ordinal() - 1]),false, false));
                 if (position.file().ordinal() < 7 && position.rank().ordinal() != 0 && position.rank().ordinal() != 7) // add hits if possible
-                    listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() + 1], rank[position.rank().ordinal() - 1]),true));
+                    listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() + 1], rank[position.rank().ordinal() - 1]),true, false));
                 if (position.file().ordinal() > 0 && position.rank().ordinal() != 0 && position.rank().ordinal() != 7)
-                    listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() - 1], rank[position.rank().ordinal() - 1]),true));
+                    listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() - 1], rank[position.rank().ordinal() - 1]),true, false));
             }
             else {
                 if (position.rank() == Rank.EIGHTH) { // add promotion if possible
                     listOfMoveMores = queenMove.generateMovesImpl(position, color);
                     //System.out.println("white promotion");
                 }else
-                    listOfMoveMores.add(new MoveMore(position, new Position(position.file(), rank[position.rank().ordinal() + 1]),false));
+                    listOfMoveMores.add(new MoveMore(position, new Position(position.file(), rank[position.rank().ordinal() + 1]), false, false));
                 if (position.file().ordinal() < 7 && position.rank().ordinal() != 0 && position.rank().ordinal() != 7) // add hits if possible
-                    listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() + 1], rank[position.rank().ordinal() + 1]),true));
+                    listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() + 1], rank[position.rank().ordinal() + 1]),true, false));
                 if (position.file().ordinal() > 0 && position.rank().ordinal() != 0 && position.rank().ordinal() != 7)
-                    listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() - 1], rank[position.rank().ordinal() + 1]),true));
+                    listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() - 1], rank[position.rank().ordinal() + 1]),true, false));
         }
-    // Needs logic for En Passant
+    // Needs logic for En Passant, add dry move (as if en passant is possible)
+        if (color == Color.BLACK) {
+            if (position.rank().ordinal() == 3) {
+                if (position.file().ordinal() < 7)
+                    listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() + 1], rank[position.rank().ordinal() - 1]),true, true));
+                if (position.file().ordinal() > 0)
+                    listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() - 1], rank[position.rank().ordinal() - 1]),true, true));
+            }
+        }
+        else {
+            if (position.rank().ordinal() == 4) {
+                if (position.file().ordinal() < 7)
+                    listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() + 1], rank[position.rank().ordinal() + 1]),true, true));
+                if (position.file().ordinal() > 0)
+                    listOfMoveMores.add(new MoveMore(position, new Position(file[position.file().ordinal() - 1], rank[position.rank().ordinal() + 1]),true, true));
+            }
+        }
 
         return listOfMoveMores;
     }

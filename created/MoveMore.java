@@ -37,10 +37,10 @@ public class MoveMore {
     }
 
     boolean isHit; // Move can be executed only if to contains enemy piece, checker command will be complex!
-    public MoveMore(Position from, Position to, boolean isHit) {
+    public MoveMore(Position from, Position to, boolean isHit, boolean enPassant) {
         this.from = from;
         this.to = to;
         this.isHit = isHit;
-        this.enPassant = false;
+        this.enPassant = enPassant;
     }
 }

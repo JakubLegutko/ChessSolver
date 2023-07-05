@@ -24,22 +24,22 @@ public class BishopMove extends MoveTemplate {
 
 // Generate top-right diagonal moves
         for (int i = 1; currentFileOrdinal + i < 8 && currentRankOrdinal - i >= 0; i++) {
-            listOfMoveMores.add(new MoveMore(position, new Position(file[currentFileOrdinal + i], rank[currentRankOrdinal - i]), true));
+            listOfMoveMores.add(new MoveMore(position, new Position(file[currentFileOrdinal + i], rank[currentRankOrdinal - i]), true, false));
         }
 
 // Generate top-left diagonal moves
         for (int i = 1; currentFileOrdinal - i >= 0 && currentRankOrdinal - i >= 0; i++) {
-            listOfMoveMores.add(new MoveMore(position, new Position(file[currentFileOrdinal - i], rank[currentRankOrdinal - i]), true));
+            listOfMoveMores.add(new MoveMore(position, new Position(file[currentFileOrdinal - i], rank[currentRankOrdinal - i]), true, false));
         }
 
 // Generate bottom-right diagonal moves
         for (int i = 1; currentFileOrdinal + i < 8 && currentRankOrdinal + i < 8; i++) {
-            listOfMoveMores.add(new MoveMore(position, new Position(file[currentFileOrdinal + i], rank[currentRankOrdinal + i]), true));
+            listOfMoveMores.add(new MoveMore(position, new Position(file[currentFileOrdinal + i], rank[currentRankOrdinal + i]), true, false));
         }
 
 // Generate bottom-left diagonal moves
         for (int i = 1; currentFileOrdinal - i >= 0 && currentRankOrdinal + i < 8; i++) {
-            listOfMoveMores.add(new MoveMore(position, new Position(file[currentFileOrdinal - i], rank[currentRankOrdinal + i]), true));
+            listOfMoveMores.add(new MoveMore(position, new Position(file[currentFileOrdinal - i], rank[currentRankOrdinal + i]), true, false));
         }
 
         return listOfMoveMores;

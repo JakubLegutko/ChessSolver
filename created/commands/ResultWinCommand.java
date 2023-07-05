@@ -22,7 +22,7 @@ public class ResultWinCommand extends ResultCheckerCommand {
                     for (MoveMore move : possibleMoves) {
                         Board.BoardMemento memento = board.createMemento();
                         board.executeMove(move);
-                        board.printBoard();
+                        // board.printBoard();
                         //System.out.println(" ");
                         //System.out.println("Printed board for move "+ move.getFrom() + " to " + move.getTo());
                         //board.recalculateMoves();
@@ -68,7 +68,7 @@ public class ResultWinCommand extends ResultCheckerCommand {
                         for (MoveMore moves : possibleMoves) {
                             Board.BoardMemento memento2 = board.createMemento();
                             board.executeMove(moves);
-                            board.printBoard();
+                            // board.printBoard();
                             //System.out.println("Printed board for counter "+ moves.getFrom() + " to " + moves.getTo());
                             //board.recalculateMoves();
                             if(!isKingInCheck(oppositeColor))
@@ -159,4 +159,3 @@ private boolean canPieceBeCaptured(Piece attackingpiece) {
     // 7. check if king can move to block check
     // 8. check if king can hit piece that is checking king
     // 9. declare checkmate or no outcome
-

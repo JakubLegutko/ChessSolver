@@ -4,12 +4,12 @@ import edu.uj.po.interfaces.*;
 public class main {
 
         public static void main(String[] args) {
-            ChessSolver chessSolver = new ChessSolver();
-            var color = Setup_MateByPromotion(chessSolver);
-            chessSolver.printBoard();
-            chessSolver.findMateInOneMove(color)
-                    .ifPresent(System.out::println);
-            chessSolver.printBoard();
+            // ChessSolver chessSolver = new ChessSolver();
+            // var color = Setup_MateByPromotion(chessSolver);
+            // chessSolver.printBoard();
+            // chessSolver.findMateInOneMove(color)
+            //         .ifPresent(System.out::println);
+            // chessSolver.printBoard();ava
 
 
             new TestRunner().run();

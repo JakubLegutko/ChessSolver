@@ -465,6 +465,35 @@ public class TestsFromPdf {
         return mateMove.isPresent();
     }
 
+    // mate: [D4-B4]
+    static boolean case19(){
+        ChessSolver chessSolver = new ChessSolver();
+        chessSolver.addChessPiece(new Position(File.d, Rank.EIGHTH), Color.BLACK, ChessPiece.ROOK);
+        chessSolver.addChessPiece(new Position(File.f, Rank.EIGHTH), Color.BLACK, ChessPiece.ROOK);
+        chessSolver.addChessPiece(new Position(File.h, Rank.EIGHTH), Color.BLACK, ChessPiece.KING);
+        chessSolver.addChessPiece(new Position(File.a, Rank.SEVENTH), Color.BLACK, ChessPiece.PAWN);
+        chessSolver.addChessPiece(new Position(File.e, Rank.SEVENTH), Color.WHITE, ChessPiece.ROOK);
+        chessSolver.addChessPiece(new Position(File.g, Rank.SEVENTH), Color.BLACK, ChessPiece.BISHOP);
+        chessSolver.addChessPiece(new Position(File.g, Rank.SIXTH), Color.BLACK, ChessPiece.PAWN);
+        chessSolver.addChessPiece(new Position(File.h, Rank.SIXTH), Color.BLACK, ChessPiece.PAWN);
+        chessSolver.addChessPiece(new Position(File.c, Rank.FIFTH), Color.BLACK, ChessPiece.PAWN);
+        chessSolver.addChessPiece(new Position(File.d, Rank.FIFTH), Color.BLACK, ChessPiece.PAWN);
+        chessSolver.addChessPiece(new Position(File.d, Rank.FOURTH), Color.BLACK, ChessPiece.QUEEN);
+        chessSolver.addChessPiece(new Position(File.a, Rank.THIRD), Color.WHITE, ChessPiece.KING);
+        chessSolver.addChessPiece(new Position(File.b, Rank.THIRD), Color.WHITE, ChessPiece.PAWN);
+        chessSolver.addChessPiece(new Position(File.c, Rank.THIRD), Color.WHITE, ChessPiece.KNIGHT);
+        chessSolver.addChessPiece(new Position(File.d, Rank.THIRD), Color.BLACK, ChessPiece.KNIGHT);
+
+        chessSolver.addChessPiece(new Position(File.e, Rank.THIRD), Color.WHITE, ChessPiece.QUEEN);
+        chessSolver.addChessPiece(new Position(File.a, Rank.SECOND), Color.WHITE, ChessPiece.PAWN);
+        chessSolver.addChessPiece(new Position(File.c, Rank.SECOND), Color.WHITE, ChessPiece.ROOK);
+        chessSolver.addChessPiece(new Position(File.g, Rank.SECOND), Color.WHITE, ChessPiece.PAWN);
+
+        Optional<Move> mateMove = chessSolver.findMateInOneMove(Color.BLACK);
+        System.out.println(mateMove);
+        return mateMove.isPresent();
+    }
+
     // mate: [D5-E6]
     static boolean caseEnPassantHard(){
         ChessSolver chessSolver = new ChessSolver();

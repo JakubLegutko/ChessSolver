@@ -43,4 +43,5 @@ public class MoveMore {
         this.isHit = isHit;
         this.enPassant = false;
     }
+
 }

@@ -20,6 +20,7 @@ public class ResultDrawCommand extends ResultCheckerCommand {
     @Override
         public Optional<Move> checkResultImpl(Color color, Board boards) {
             this.board = boards;
+            board.printBoard();
             for (Piece piece : board.getPieces()) {
                 if (piece.isActive())
                     if (piece.getPieceColor() == color) {
@@ -28,10 +29,7 @@ public class ResultDrawCommand extends ResultCheckerCommand {
                             Board.BoardMemento memento = board.createMemento();
                             board.executeMove(move);
                             //board.printBoard();
-                            //System.out.println(" ");
-                            //System.out.println("Printed board for move "+ move.getFrom() + " to " + move.getTo());
-                            board.recalculateMoves();
-                            boolean isStalemate = canAnyPieceMoveOpposite(color);
+                            boolean isStalemate = isStalemate(color);
                             if (isStalemate) {
                                 return Optional.of(MoveAdapter.convertMoveMoreToMove(move));
                             }
@@ -42,62 +40,90 @@ public class ResultDrawCommand extends ResultCheckerCommand {
 
             return Optional.empty();
         }
-        public boolean canAnyPieceMoveOpposite(Color color) {
+        public boolean isStalemate(Color color) {
             Color oppositeColor = color == Color.WHITE ? Color.BLACK : Color.WHITE;
-            if(board.getTeamMoves(oppositeColor).size() == 0 && !isKingInCheck(oppositeColor))
-                return true;
-            else
-                //Try to move all pieces from enemy team, check if king will be in check after the move, or king is adjacent to enemy king
-                for (Piece piece : board.getPieces()) {
-                    if (piece.isActive())
-                        if (piece.getPieceColor() == oppositeColor) {
-                            List<MoveMore> possibleMoves = piece.getListOfMoveMores();
-                            for (MoveMore move : possibleMoves) {
-                                Board.BoardMemento memento = board.createMemento();
-                                board.executeMove(move);
-                                //board.printBoard();
-                                //System.out.println(" ");
-                                //System.out.println("Printed board for move "+ move.getFrom() + " to " + move.getTo());
-                                board.recalculateMoves();
-                                boolean isCheck = isKingInCheck(oppositeColor);
-                                if (!isCheck) {
-                                    return false;
-                                }
-                                board.restoreFromMemento(memento);
-                            }
-                        }
+            if(board.getTeamMoves(oppositeColor).isEmpty()) {
+                if(!isKingInCheck(oppositeColor)) {
+                    return true;
                 }
-                return false;
-        }
-
-        public boolean isKingInCheck(Color color) {
-            Position kingPosition = findKingPosition(color);
-            List<Position> listOfPositions = new ArrayList<>();
-            for (Piece piece : board.getPieces()) {
-                if (piece.isActive())
-                    if (piece.getPieceColor() != color) {
-                        List<MoveMore> possibleMoves = piece.getListOfMoveMores();
-                        for (MoveMore move : possibleMoves) {
-                            if (move.getTo().equals(kingPosition)) {
-                                return true;
-                            }
-                        }
-                    }
+                else {
+                    return false;
+                }
             }
-            return false;
+            else // Make sure that any leftover moves are legal (do not result in check of king)
+            {
+                Piece enemyKing = board.getPieceAtPosition(findKingPosition(color));
+                for (MoveMore move : board.getTeamMoves(oppositeColor)) {
+                    // Will the move place the king next to enemy king?
+                if (board.getPieceAtPosition(move.getFrom()).getPieceType() == ChessPiece.KING) {
+                    if (Math.abs(move.getTo().file().ordinal() - enemyKing.getPiecePosition().file().ordinal()) <= 1
+                            && Math.abs(move.getTo().rank().ordinal() - enemyKing.getPiecePosition().rank().ordinal()) <= 1) {
+                        continue;
+                    }
+                }
+                // Will the move place the king in a position diagonally next to enemy pawn?
+                    if (board.getPieceAtPosition(move.getFrom()).getPieceType() == ChessPiece.KING) {
+                        boolean hasPawn = false;
+        List<Position> positions = board.getDiagonalAdjacentPositions(move.getTo());
+        for (Position position : positions) {
+            if (board.getPieceAtPosition(position) != null)
+                if (board.getPieceAtPosition(position).getPieceType() == ChessPiece.PAWN
+                    && board.getPieceAtPosition(position).getPieceColor() == color) {
+                    hasPawn = true;
+            }
+        }
+        if (hasPawn) {
+            continue;
+        }
+                    }
+
+
+
+
+                    Board.BoardMemento memento = board.createMemento();
+                    board.executeMove(move);
+                    //board.printBoard();
+                    boolean isCheck = isKingInCheck(oppositeColor);
+                    board.restoreFromMemento(memento);
+                    if (!isCheck || !board.getTeamMoves(color).isEmpty()) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+                //return false;
         }
 
-    private Position findKingPosition(Color color) {
+    private boolean isKingInCheck(Color color) {
+        // Find the position of the king of the specified color
+        Position kingPosition = findKingPosition(color);
+        // Iterate through all the pieces of the opposite color
         for (Piece piece : board.getPieces()) {
-            if (piece.isActive())
-                if (piece.getPieceColor() == color && piece.getPieceType() == ChessPiece.KING) {
-                    return piece.getPiecePosition();
+            if (piece.getPieceColor() != color) {
+                // Get all possible moves for the piece
+                List<MoveMore> possibleMoves = piece.getListOfMoveMores();
+                // Check if any move can capture the king
+                for (MoveMore move : possibleMoves) {
+                    if (move.getTo().equals(kingPosition) && move.isHit()) {
+                        return true; // King is in check
+                    }
                 }
+            }
+        }
+
+        return false; // King is not in check
+    }
+
+
+    private Position findKingPosition(Color oppositeColor) {
+        for (Piece piece : board.getPieces()) {
+            if (piece.getPieceType() == ChessPiece.KING && piece.getPieceColor() == oppositeColor) {
+                return piece.getPiecePosition();
+            }
         }
         return null;
     }
 }
-
 
 
 

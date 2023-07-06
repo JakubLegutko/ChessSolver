@@ -9,9 +9,11 @@ import util.result;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Stack;
 
 public class Board {
     private List<Piece> pieces;
+
     private List<Position> fields = new ArrayList<>();
     ResultCheckerCommand resultCheckerCommand;
 
@@ -77,19 +79,7 @@ public class Board {
             existingPiece.listOfMoveMores.removeAll(listOfMovesToRemove);
         }
     }
-    //    public void eliminateImpossibleMoves(Board board) {
-//        if (!isActive) {
-//            this.listOfMoveMores.clear();
-//            return;
-//        }
-//        List <MoveMore> listOfMovesToRemove = new ArrayList<>();
-//        for (MoveMore move : this.listOfMoveMores) {
-//            if (!board.isMovePossible(move)) {
-//                listOfMovesToRemove.add(move);
-//            }
-//        }
-//        this.listOfMoveMores.removeAll(listOfMovesToRemove);
-//    }
+
     public void printBoard() {
         System.out.println("New board:");
         System.out.println("   A   B   C   D   E   F   G   H");
@@ -347,4 +337,36 @@ public class Board {
         getPieceAtPosition(to).setActive(false);
     }
 
+    public List<Position> getDiagonalAdjacentPositions(Position position) {
+        List<Position> adjacentPositions = new ArrayList<>();
+
+        int fileIndex = position.file().ordinal();
+        int rankIndex = position.rank().ordinal();
+
+        // Check top-left position
+        if (fileIndex > 0 && rankIndex < 7) {
+            Position topLeft = new Position(File.values()[fileIndex - 1], Rank.values()[rankIndex + 1]);
+            adjacentPositions.add(topLeft);
+        }
+
+        // Check top-right position
+        if (fileIndex < 7 && rankIndex < 7) {
+            Position topRight = new Position(File.values()[fileIndex + 1], Rank.values()[rankIndex + 1]);
+            adjacentPositions.add(topRight);
+        }
+
+        // Check bottom-left position
+        if (fileIndex > 0 && rankIndex > 0) {
+            Position bottomLeft = new Position(File.values()[fileIndex - 1], Rank.values()[rankIndex - 1]);
+            adjacentPositions.add(bottomLeft);
+        }
+
+        // Check bottom-right position
+        if (fileIndex < 7 && rankIndex > 0) {
+            Position bottomRight = new Position(File.values()[fileIndex + 1], Rank.values()[rankIndex - 1]);
+            adjacentPositions.add(bottomRight);
+        }
+
+        return adjacentPositions;
+    }
 }

@@ -53,7 +53,9 @@ public class ResultDrawCommand extends ResultCheckerCommand {
             else // Make sure that any leftover moves are legal (do not result in check of king)
             {
                 Piece enemyKing = board.getPieceAtPosition(findKingPosition(color));
+
                 for (MoveMore move : board.getTeamMoves(oppositeColor)) {
+
                     // Will the move place the king next to enemy king?
                 if (board.getPieceAtPosition(move.getFrom()).getPieceType() == ChessPiece.KING) {
                     if (Math.abs(move.getTo().file().ordinal() - enemyKing.getPiecePosition().file().ordinal()) <= 1
@@ -61,9 +63,11 @@ public class ResultDrawCommand extends ResultCheckerCommand {
                         continue;
                     }
                 }
+
                 // Will the move place the king in a position diagonally next to enemy pawn?
                     if (board.getPieceAtPosition(move.getFrom()).getPieceType() == ChessPiece.KING) {
                         boolean hasPawn = false;
+
         List<Position> positions = board.getDiagonalAdjacentPositions(move.getTo());
         for (Position position : positions) {
             if (board.getPieceAtPosition(position) != null)
@@ -83,15 +87,18 @@ public class ResultDrawCommand extends ResultCheckerCommand {
                     Board.BoardMemento memento = board.createMemento();
                     board.executeMove(move);
                     //board.printBoard();
-                    boolean isCheck = isKingInCheck(oppositeColor);
+                    boolean wasChecked = isKingInCheck(color);
+
                     board.restoreFromMemento(memento);
-                    if (!isCheck || !board.getTeamMoves(color).isEmpty()) {
+                    if (wasChecked) {
+                        return true;
+                    }
+                    if (!board.getTeamMoves(oppositeColor).isEmpty()) {
                         return false;
                     }
                 }
                 return true;
             }
-                //return false;
         }
 
     private boolean isKingInCheck(Color color) {

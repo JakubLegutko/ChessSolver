@@ -151,4 +151,27 @@ public class TestStalemate {
         System.out.println(stalemateMove);
         return stalemateMove.isPresent();
     }
+    public static boolean case12() {
+        ChessSolver chessSolver = new ChessSolver();
+
+        chessSolver.addChessPiece(new Position(File.d, Rank.FIFTH), Color.WHITE, ChessPiece.KING);
+        chessSolver.addChessPiece(new Position(File.e, Rank.SEVENTH), Color.WHITE, ChessPiece.ROOK);
+        chessSolver.addChessPiece(new Position(File.f, Rank.SEVENTH), Color.WHITE, ChessPiece.ROOK);
+        chessSolver.addChessPiece(new Position(File.h, Rank.EIGHTH), Color.BLACK, ChessPiece.KING);
+
+        Optional<Move> stalemateMove = chessSolver.findStalemateInOneMove(Color.WHITE);
+        System.out.println(stalemateMove);
+        return stalemateMove.isPresent();
+    }
+    public static boolean case13(){
+        ChessSolver chessSolver = new ChessSolver();
+        chessSolver.addChessPiece(new Position(File.d, Rank.FIFTH), Color.WHITE, ChessPiece.KING);
+        chessSolver.addChessPiece(new Position(File.e, Rank.SEVENTH), Color.WHITE, ChessPiece.QUEEN);
+        chessSolver.addChessPiece(new Position(File.f, Rank.SEVENTH), Color.WHITE, ChessPiece.ROOK);
+        chessSolver.addChessPiece(new Position(File.h, Rank.EIGHTH), Color.BLACK, ChessPiece.KING);
+
+        Optional<Move> stalemateMove = chessSolver.findStalemateInOneMove(Color.WHITE);
+        System.out.println(stalemateMove);
+        return stalemateMove.isPresent();
+    }
 }

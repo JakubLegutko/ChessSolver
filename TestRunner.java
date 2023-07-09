@@ -44,6 +44,8 @@ public class TestRunner {
         assertify(TestStalemate.case9(), "Case 9");
         assertify(TestStalemate.case10(), "Case 10");
         assertify(TestStalemate.case11(), "Case 11");
+        assertify(TestStalemate.case12(), "Case 12");
+        assertify(TestStalemate.case13(), "Case 13");
         System.out.println("Stalemate search - OK");
 
         System.out.println("Tests finished \\(._.)/");

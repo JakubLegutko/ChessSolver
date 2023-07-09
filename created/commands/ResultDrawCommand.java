@@ -42,8 +42,9 @@ public class ResultDrawCommand extends ResultCheckerCommand {
         }
         public boolean isStalemate(Color color) {
             Color oppositeColor = color == Color.WHITE ? Color.BLACK : Color.WHITE;
+            List<MoveMore> leftMoves = new ArrayList<>();
             if(board.getTeamMoves(oppositeColor).isEmpty()) {
-                if(!isKingInCheck(oppositeColor)) {
+                if(!isKingInCheck(color) && !isKingInCheck(oppositeColor)) {
                     return true;
                 }
                 else {
@@ -60,6 +61,7 @@ public class ResultDrawCommand extends ResultCheckerCommand {
                 if (board.getPieceAtPosition(move.getFrom()).getPieceType() == ChessPiece.KING) {
                     if (Math.abs(move.getTo().file().ordinal() - enemyKing.getPiecePosition().file().ordinal()) <= 1
                             && Math.abs(move.getTo().rank().ordinal() - enemyKing.getPiecePosition().rank().ordinal()) <= 1) {
+                        leftMoves.add(move);
                         continue;
                     }
                 }
@@ -77,27 +79,34 @@ public class ResultDrawCommand extends ResultCheckerCommand {
             }
         }
         if (hasPawn) {
+            leftMoves.add(move);
             continue;
         }
                     }
 
 
 
-
+                    if (isKingInCheck(oppositeColor) )
+                        return false;
                     Board.BoardMemento memento = board.createMemento();
                     board.executeMove(move);
                     //board.printBoard();
                     boolean wasChecked = isKingInCheck(color);
-
+                    boolean wasEnemyChecked = isKingInCheck(oppositeColor);
                     board.restoreFromMemento(memento);
-                    if (wasChecked) {
-                        return true;
+                    if (wasEnemyChecked) {
+                        leftMoves.add(move);
+
                     }
-                    if (!board.getTeamMoves(oppositeColor).isEmpty()) {
-                        return false;
-                    }
+
                 }
+
+            }
+            if (leftMoves.size() == board.getTeamMoves(oppositeColor).size()) {
                 return true;
+            }
+            else {
+                return false;
             }
         }
 
